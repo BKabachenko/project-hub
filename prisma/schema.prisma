@@ -1,0 +1,154 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  name      String?
+  createdAt DateTime   @default(now())
+  status    UserStatus
+  updatedAt DateTime   @updatedAt
+
+  authoredProjects   Project[]
+  projectMemberships ProjectMember[]
+  userReview         UserReview[]    @relation(name: "ReviewAuthor")
+  receivedReviews    UserReview[]    @relation(name: "ReviewTarget")
+  projectReviews     ProjectReview[]
+}
+
+model Project {
+  id                   String          @id @default(cuid())
+  authorId             String
+  title                String
+  description          String
+  category             ProjectCategory
+  status               ProjectStatus   @default(ACTIVE)
+  requiredParticipants Int             @default(1)
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+
+  authorUser     User            @relation(fields: [authorId], references: [id])
+  projectMembers ProjectMember[]
+  projectReviews ProjectReview[]
+  membersReviews UserReview[]
+}
+
+model ProjectMember {
+  userId    String
+  projectId String
+  status    ProjectMemberStatus
+  role      MemberRole
+  joinedAt  DateTime            @default(now())
+
+  user    User    @relation(fields: [userId], references: [id])
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@id([userId, projectId])
+}
+
+model ProjectReview {
+  authorId  String
+  projectId String
+  review    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  rating    Int
+
+  user    User    @relation(fields: [authorId], references: [id])
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@id([authorId, projectId])
+}
+
+model UserReview {
+  authorId  String
+  targetId  String
+  projectId String
+  review    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  rating    Int
+
+  reviewAuthor User    @relation(name: "ReviewAuthor", fields: [authorId], references: [id])
+  targetUser   User    @relation(name: "ReviewTarget", fields: [targetId], references: [id])
+  project      Project @relation(fields: [projectId], references: [id])
+
+  @@id([authorId, targetId, projectId])
+}
+
+enum UserStatus {
+  ACTIVE
+  DELETED
+  BANNED
+}
+
+enum MemberRole {
+  FRONTEND_DEVELOPER
+  BACKEND_DEVELOPER
+  FULLSTACK_DEVELOPER
+  PROJECT_MANAGER
+  UI_UX_DESIGNER
+  QA_ENGINEER
+  DEVOPS_ENGINEER
+  BUSINESS_ANALYST
+  DATA_SCIENTIST
+  MARKETING_SPECIALIST
+  OWNER
+}
+
+enum ProjectStatus {
+  ACTIVE
+  FINISHED
+  CLOSED
+}
+
+enum ProjectMemberStatus {
+  PENDING
+  APPROVED
+  DECLINED
+}
+
+enum ProjectCategory {
+  E_COMMERCE
+  EDUCATION
+  HEALTHCARE
+  FINANCE
+  SOCIAL_NETWORK
+  PRODUCTIVITY
+  ENTERTAINMENT
+  REAL_ESTATE
+  TRAVEL
+  FOOD_DELIVERY
+  LOGISTICS
+  SAAS
+  ARTIFICIAL_INTELLIGENCE
+  BLOCKCHAIN
+  IOT
+  GAMING
+  FITNESS
+  MUSIC
+  VIDEO
+  NEWS
+  JOB_BOARD
+  DATING
+  CROWDFUNDING
+  CRM
+  ERP
+  MARKETPLACE
+  STREAMING
+  ANALYTICS
+  CYBERSECURITY
+  AR_VR
+}
