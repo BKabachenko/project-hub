@@ -59,6 +59,14 @@ const eslintConfig = defineConfig([
       "@typescript-eslint/no-misused-promises": "error",
 
       "react-compiler/react-compiler": "error",
+
+      "no-warning-comments": [
+        "error", 
+        { 
+          terms: ["todo", "fix", "replace"], 
+          location: "anywhere" 
+        }
+  ],
     },
   },
 

@@ -1,0 +1,2 @@
+eslint.config.mjs linguist-detectable=false
+postcss.config.mjs linguist-detectable=false
