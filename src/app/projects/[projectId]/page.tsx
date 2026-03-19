@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { notFound } from "next/navigation";
 
 const ProjectPage = async ({ params }: { params: Promise<{ projectId: string }> }) => {
   const { projectId } = await params;
@@ -7,6 +8,10 @@ const ProjectPage = async ({ params }: { params: Promise<{ projectId: string }> 
       id: projectId,
     },
   });
+
+  if (!project) {
+    notFound();
+  }
 
   return (<div>{project?.title}</div>);
 };
