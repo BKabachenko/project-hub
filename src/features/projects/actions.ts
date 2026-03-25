@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
+import { auth } from '@/auth';
 import prisma from '@/lib/prisma';
 
 export type ActionState = {
@@ -40,11 +41,16 @@ export async function createProjectAction(
     };
   }
 
-  // REPLACE: authorId to real userID
+  const session = await auth();
+
+  if (!session || !session.user || !session.user.id) {
+    return { success: false, message: `Something went wrong! Try again later!` };
+  }
+
   try {
     await prisma.project.create({
       data: {
-        authorId: '1',
+        authorId: session.user.id,
         title: validatedFields.data.title,
         description: validatedFields.data.description,
         category: validatedFields.data.category,
@@ -55,10 +61,10 @@ export async function createProjectAction(
     return { success: true, message: 'Project created!' };
   } catch (err) {
     if (err instanceof Error) {
-      console.error(err)
+      console.error(err);
       return { success: false, message: `Something went wrong! Try again later!` };
     } else {
-      console.error(err)
+      console.error(err);
       return { success: false, message: `Something went wrong! Try again later!` };
     }
   }
