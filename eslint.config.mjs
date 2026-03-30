@@ -1,22 +1,22 @@
 import js from '@eslint/js';
-import { defineConfig, globalIgnores } from "eslint/config";
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
-import tseslint from "typescript-eslint";
-import reactCompiler from "eslint-plugin-react-compiler";
+import nextVitals from 'eslint-config-next/core-web-vitals';
+import nextTs from 'eslint-config-next/typescript';
+import reactCompiler from 'eslint-plugin-react-compiler';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
 const eslintConfig = defineConfig([
   globalIgnores([
-    ".next/**",
-    "out/**",
-    "build/**",
-    "dist/**",
-    "node_modules/**",
-    "*.config.*",
-    "next-env.d.ts",
-    "src/generated/**",
-    "prisma/**",
+    '.next/**',
+    'out/**',
+    'build/**',
+    'dist/**',
+    'node_modules/**',
+    '*.config.*',
+    'next-env.d.ts',
+    'src/generated/**',
+    'prisma/**',
   ]),
 
   js.configs.recommended,
@@ -28,12 +28,12 @@ const eslintConfig = defineConfig([
   reactCompiler.configs.recommended,
 
   {
-    files: ["**/*.{ts,tsx}"],
+    files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 'latest',
       globals: {
         ...globals.browser,
-        ...globals.node, 
+        ...globals.node,
       },
       parserOptions: {
         projectService: true,
@@ -42,36 +42,42 @@ const eslintConfig = defineConfig([
     },
     settings: {
       react: {
-        version: "detect", 
+        version: 'detect',
       },
     },
     rules: {
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
-        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          args: 'all',
+          argsIgnorePattern: '^_',
+          vars: 'all',
+          varsIgnorePattern: '^_',
+          caughtErrors: 'all',
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+        },
       ],
-      "@typescript-eslint/consistent-type-imports": [
-        "error",
-        { fixStyle: "inline-type-imports" }
+      '@typescript-eslint/consistent-type-imports': ['error', { fixStyle: 'inline-type-imports' }],
+
+      '@typescript-eslint/no-floating-promises': 'error',
+      '@typescript-eslint/no-misused-promises': 'error',
+
+      'react-compiler/react-compiler': 'error',
+
+      'no-warning-comments': [
+        'error',
+        {
+          terms: ['todo', 'fix', 'replace'],
+          location: 'anywhere',
+        },
       ],
-      
-      "@typescript-eslint/no-floating-promises": "error",
-      "@typescript-eslint/no-misused-promises": "error",
-
-      "react-compiler/react-compiler": "error",
-
-      "no-warning-comments": [
-        "error", 
-        { 
-          terms: ["todo", "fix", "replace"], 
-          location: "anywhere" 
-        }
-  ],
     },
   },
 
   {
-    files: ["**/*.js", "**/*.mjs", "**/*.cjs"],
+    files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
     ...tseslint.configs.disableTypeChecked,
   },
 ]);
