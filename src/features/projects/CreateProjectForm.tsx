@@ -3,11 +3,7 @@
 import { useActionState } from 'react';
 
 import { createProjectAction } from './actions';
-import type { ActionState } from './actions';
-
-const initialState: ActionState = {
-  success: false,
-};
+import { initialState } from '@/lib/constants';
 
 const CreateProjectForm = () => {
   const [state, formAction, isPending] = useActionState(createProjectAction, initialState);
