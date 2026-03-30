@@ -11,6 +11,7 @@
   "endOfLine": "lf",
   "importOrder": [
     "^react(.*)$",
+    "^next(.*)$",
     "<THIRD_PARTY_MODULES>",
     "^(@/|\\./|\\.\\./)types(.*)$",
     "^@/(.*)$",
