@@ -59,9 +59,8 @@ model ProjectMember {
   user    User    @relation(fields: [userId], references: [id])
   project Project @relation(fields: [projectId], references: [id])
 
-  @@id([userId, projectId])
+  @@id([userId, projectId, role])
 }
-
 model ProjectReview {
   authorId  String
   projectId String
