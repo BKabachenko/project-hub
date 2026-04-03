@@ -1,6 +1,6 @@
-import Link from 'next/link';
-
 import prisma from '@/lib/prisma';
+
+import ProjectCard from '../projects/components/ProjectCard';
 
 export default async function Home() {
   const newTenProjects = await prisma.project.findMany({
@@ -13,16 +13,11 @@ export default async function Home() {
   return (
     <>
       <p>Latest 10 projects</p>
-      {newTenProjects.map((project) => (
-        <Link key={project.id} href={`/projects/${project.id}`}>
-          <div className='mb-2 block'>
-            <div className=''>
-              <div className=''>Title - {project.title}</div>
-              <div className=''>Description - {project.description}</div>
-            </div>
-          </div>
-        </Link>
-      ))}
+      <div className='flex flex-col gap-y-10'>
+        {newTenProjects.map((project) => (
+          <ProjectCard key={project.id} project={project} />
+        ))}
+      </div>
     </>
   );
 }
