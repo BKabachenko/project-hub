@@ -1,13 +1,14 @@
+import { cache } from 'react';
+
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
-import prisma from '@/lib/prisma';
 import ApplyToProjectForm from '@/features/projects/ApplyToProjectBtn';
+import prisma from '@/lib/prisma';
 
-const ProjectPage = async ({ params }: { params: Promise<{ projectId: string }> }) => {
-  const { projectId } = await params;
-
-  const project = await prisma.project.findUnique({
+const getProject = cache(async (projectId: string) => {
+  return await prisma.project.findUnique({
     where: {
       id: projectId,
     },
@@ -20,6 +21,30 @@ const ProjectPage = async ({ params }: { params: Promise<{ projectId: string }> 
       },
     },
   });
+});
+
+export const generateMetadata = async ({
+  params,
+}: {
+  params: Promise<{ projectId: string }>;
+}): Promise<Metadata> => {
+  const { projectId } = await params;
+  const project = await getProject(projectId);
+
+  if (!project) {
+    notFound();
+  }
+
+  return {
+    title: project.title,
+    description: project.description,
+  };
+};
+
+const ProjectPage = async ({ params }: { params: Promise<{ projectId: string }> }) => {
+  const { projectId } = await params;
+
+  const project = await getProject(projectId);
 
   if (!project) {
     notFound();
@@ -36,7 +61,7 @@ const ProjectPage = async ({ params }: { params: Promise<{ projectId: string }> 
       <div className=''>Project title - {project.title}</div>
       <div className=''>Author description - {project.description}</div>
       <div className=''>Project approved members (count) - {project._count.projectMembers}</div>
-      <ApplyToProjectForm projectId={projectId}/>
+      <ApplyToProjectForm projectId={projectId} />
     </div>
   );
 };
