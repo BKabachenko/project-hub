@@ -1,12 +1,14 @@
+import ProjectCard from '@/app/(main)/projects/_components/ProjectCard';
 import prisma from '@/lib/prisma';
-
-import ProjectCard from '../projects/components/ProjectCard';
 
 export default async function Home() {
   const newTenProjects = await prisma.project.findMany({
     take: 10,
     orderBy: {
       createdAt: 'desc',
+    },
+    include: {
+      projectPositions: true,
     },
   });
 
