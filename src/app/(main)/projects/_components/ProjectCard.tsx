@@ -1,36 +1,55 @@
 import Link from 'next/link';
 
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { memberRoleLabels, projectStatusLabels, projectTypeLabels } from '@/lib/constants';
 import type { ProjectWithPositions } from '../types';
 
+import { Badge } from '@/components/ui/badge';
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { memberRoleLabels } from '@/lib/constants';
+
+import ProjectStatusBadge from './ProjectStatusBadge';
+import ProjectTypeBadge from './ProjectTypeBadge';
+
 const ProjectCard = ({ project }: { project: ProjectWithPositions }) => {
-  console.log(project);
   return (
-    <Link href={`/projects/${project.id}`}>
-      <Card>
-        <CardHeader>
-          <div className='flex flex-row flex-wrap gap-2'>
-            {project.type.map((type) => (
-              <Badge key={type} variant={'default'}>
-                {projectTypeLabels[type]}
+    <Card className={'max-w-175 shadow-md'}>
+      <CardHeader>
+        <Link href={`/projects/${project.id}`}>
+          <CardTitle className={'text-2xl font-bold'}>{project.title}</CardTitle>
+        </Link>
+        <CardDescription>
+          <div className='text-sm'>Posted 2 hours ago</div>
+        </CardDescription>
+        <CardAction className={'flex gap-2'}>
+          {project.type.map((type) => (
+            <ProjectTypeBadge key={type} type={type} />
+          ))}
+          <ProjectStatusBadge status={project.status} />
+          {}
+        </CardAction>
+      </CardHeader>
+      <CardContent className={'flex flex-col gap-2'}>
+        <p className={'line-clamp-3'}>{project.description}</p>
+        <div className='flex flex-row flex-wrap items-center justify-between'>
+          <div className={'flex flex-row flex-wrap gap-2'}>
+            {project.projectPositions.map((position) => (
+              <Badge key={position.role} variant={'role'}>
+                {memberRoleLabels[position.role]}
               </Badge>
             ))}
-            <Badge variant={'secondary'}>{projectStatusLabels[project.status]}</Badge>
           </div>
-          <CardTitle>{project.title}</CardTitle>
-          <CardDescription>{project.description}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {project.projectPositions.map((position) => (
-            <Badge key={position.role} variant={'secondary'}>
-              {memberRoleLabels[position.role]}
-            </Badge>
-          ))}
-        </CardContent>
-      </Card>
-    </Link>
+          <Link href={`/projects/${project.id}`} className={'font-semibold hover:underline'}>
+            {'Details...'}
+          </Link>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
