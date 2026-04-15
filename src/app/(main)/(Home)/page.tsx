@@ -20,7 +20,7 @@ export default async function Home() {
 
   return (
     <>
-      <div className='flex flex-row justify-center gap-4'>
+      <div className='flex flex-col justify-center gap-4 md:flex-row'>
         <div className='flex flex-col gap-8'>
           <div className=''>
             <InputGroup className={'bg-input border-border p-6 shadow-md'}>
