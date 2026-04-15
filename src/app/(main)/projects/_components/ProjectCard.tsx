@@ -18,7 +18,7 @@ import ProjectTypeBadge from './ProjectTypeBadge';
 
 const ProjectCard = ({ project }: { project: ProjectWithPositions }) => {
   return (
-    <Card className={'max-w-175 shadow-md'}>
+    <Card className={'max-w-175 shadow-md p-2 py-6'}>
       <CardHeader>
         <Link href={`/projects/${project.id}`}>
           <CardTitle className={'text-2xl font-bold'}>{project.title}</CardTitle>
