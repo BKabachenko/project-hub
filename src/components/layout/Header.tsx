@@ -1,5 +1,7 @@
 import Link from 'next/link';
 
+import { Menu } from 'lucide-react';
+
 import { auth, signIn, signOut } from '@/auth';
 
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -10,11 +12,11 @@ const Header = async () => {
 
   return (
     <header className='mb-10'>
-      <div className='bg-background border-border mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center rounded-lg border px-8 py-5'>
+      <div className='bg-card border-border mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center rounded-lg border px-8 py-5'>
         <Link href={'/'}>
           <div className=''>Project Hub</div>
         </Link>
-        <nav className='flex justify-end gap-x-5 px-10'>
+        <nav className='hidden justify-end gap-x-5 px-10 md:flex'>
           <Link href={'/'} className=''>
             Home
           </Link>
@@ -31,6 +33,12 @@ const Header = async () => {
           ) : (
             ''
           )}
+        </nav>
+        <nav className={'flex justify-center md:hidden'}>
+          <div className='flex flex-row items-center'>
+            <Menu size={18} />
+            Menu
+          </div>
         </nav>
         <div className=''>
           {session ? (
