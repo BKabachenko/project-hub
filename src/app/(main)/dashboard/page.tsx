@@ -1,14 +1,12 @@
-import Link from 'next/link';
-
 import { ChevronDown, FileUser, Users } from 'lucide-react';
 
 import { auth } from '@/auth';
-import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-
 import prisma from '@/lib/prisma';
-import OwnerProjectCard from './_components/OwnerProjectCard';
+
+import MemberProjectsBlock from './_components/MemberProjectsBlock';
 import OwnerProjectBlock from './_components/OwnerProjectBlock';
+import OwnerProjectCard from './_components/OwnerProjectCard';
 
 const DashboardPage = async () => {
   const session = await auth();
@@ -24,8 +22,8 @@ const DashboardPage = async () => {
             some: {
               userId: session.user?.id,
               status: {
-                in: ['APPROVED', 'PENDING']
-              }
+                in: ['APPROVED', 'PENDING'],
+              },
             },
           },
         },
@@ -36,7 +34,7 @@ const DashboardPage = async () => {
       projectMembers: {
         where: {
           status: {
-            in: ['APPROVED', 'PENDING']
+            in: ['APPROVED', 'PENDING'],
           },
         },
         include: {
@@ -48,18 +46,15 @@ const DashboardPage = async () => {
     },
   });
 
-  console.log(projects);
-
-  const userOwnedProjects = projects.filter(project => project.authorId === userId) 
-  console.log('userOwnedProjects', userOwnedProjects)
-
-  const userParticipantProjects = projects.filter(project => project.projectMembers.some(user => user.userId === userId));
-  console.log('userParticipantProjects', userParticipantProjects)
-
+  const userOwnedProjects = projects.filter((project) => project.authorId === userId);
+  const userParticipantProjects = projects.filter((project) =>
+    project.projectMembers.some((user) => user.userId === userId)
+  );
 
   const userName = session.user?.name?.split(' ')[0];
 
   const totalOpenProjects = projects.length;
+
   const totalOwnACtiveProjects = projects.reduce((sum, project) => {
     if (project.authorId === session.user?.id) return sum + 1;
     return sum;
@@ -109,31 +104,8 @@ const DashboardPage = async () => {
           </div>
         </Card>
       </div>
-      <OwnerProjectBlock projects={userOwnedProjects}/>
-      <div className={'flex flex-col gap-4'}>
-        <div className={''}>
-          <h3 className={'text-2xl font-bold'}>Active Contributions</h3>
-        </div>
-        <div className={'grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4'}>
-          <Card className={'max-w-120'}>
-            <CardHeader>
-              <CardTitle className={'text-lg font-bold'}>
-                <Link href={'#'}>Summit Resort</Link>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className={'grid grid-cols-[1fr_70px] items-center justify-between gap-4'}>
-              <div className={'flex flex-row flex-wrap gap-2'}>
-                <Badge variant={'role'} className={'col-start-1'}>
-                  Designer
-                </Badge>
-              </div>
-              <Link href={'#'} className={'col-start-2 flex items-end justify-center'}>
-                Details...
-              </Link>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      <OwnerProjectBlock projects={userOwnedProjects} />
+      <MemberProjectsBlock projects={userParticipantProjects} />
     </div>
   );
 };
