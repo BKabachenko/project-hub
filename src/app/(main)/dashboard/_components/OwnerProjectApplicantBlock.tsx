@@ -1,3 +1,7 @@
+'use client';
+
+import { useTransition } from 'react';
+
 import Image from 'next/image';
 
 import { FileUser } from 'lucide-react';
@@ -5,6 +9,7 @@ import { FileUser } from 'lucide-react';
 import type { ProjectMemberWithUser } from '../types';
 
 import { Button } from '@/components/ui/button';
+import approveUserAction from '@/features/dashboard/approveUserAction';
 import { memberRoleLabels } from '@/lib/constants';
 import { timeAgo } from '@/lib/utils';
 
@@ -13,6 +18,18 @@ interface OwnerProjectApplicantBlockProps {
 }
 
 const OwnerProjectApplicantBlock = ({ applicant }: OwnerProjectApplicantBlockProps) => {
+  const [isPending, startTransition] = useTransition();
+
+  const handleApprove = () => {
+    startTransition(async () => {
+      await approveUserAction({
+        projectId: applicant.projectId,
+        memberId: applicant.userId,
+        role: applicant.role,
+      });
+    });
+  };
+
   return (
     <div className='flex flex-row items-center justify-between gap-4 align-middle'>
       <div className={'flex flex-row items-center gap-2'}>
@@ -42,7 +59,7 @@ const OwnerProjectApplicantBlock = ({ applicant }: OwnerProjectApplicantBlockPro
         <Button variant={'outline'} size={'sm'}>
           DEATILS
         </Button>
-        <Button variant={'default'} size={'sm'}>
+        <Button variant={'default'} size={'sm'} onClick={handleApprove}>
           APPROVE
         </Button>
         <Button variant={'outline'} size={'sm'}>
