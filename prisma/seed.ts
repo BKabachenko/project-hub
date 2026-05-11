@@ -2,13 +2,12 @@ import { faker } from '@faker-js/faker';
 
 import prisma from '@/lib/prisma';
 
+import { seedApplications } from './seeders/applicationSeeder';
 import { cleanDb } from './seeders/cleanDb';
-import { seedMembersAndRequirements } from './seeders/membersSeeder';
+import { seedProjectMembers } from './seeders/projectMemberSeeder';
+import { seedProjectRequirements } from './seeders/projectRequirementSeeder';
 import { seedProjects } from './seeders/projectsSeeder';
-import { seedReviews } from './seeders/reviewsSeeder';
 import { seedUsers } from './seeders/usersSeeder';
-
-// const prisma = new PrismaClient();
 
 async function main() {
   console.time('Seeding execution time');
@@ -16,13 +15,11 @@ async function main() {
 
   await cleanDb(prisma);
 
-  faker.seed(123);
-
-  const users = await seedUsers(prisma, 20);
-  const projects = await seedProjects(prisma, users, 15);
-
-  await seedMembersAndRequirements(prisma, users, projects);
-  await seedReviews(prisma, users, projects);
+  await seedUsers(prisma);
+  await seedProjects(prisma);
+  await seedProjectRequirements(prisma);
+  await seedApplications(prisma);
+  await seedProjectMembers(prisma);
 
   console.log('Database seeding completed successfully.');
   console.timeEnd('Seeding execution time');

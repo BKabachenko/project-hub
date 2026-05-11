@@ -8,6 +8,8 @@ export async function cleanDb(prisma: PrismaClient) {
     prisma.projectReview.deleteMany(),
     prisma.projectMember.deleteMany(),
     prisma.projectRequirement.deleteMany(),
+    prisma.application.deleteMany(),
+    prisma.milestone.deleteMany(),
     prisma.session.deleteMany(),
     prisma.account.deleteMany(),
     prisma.verificationToken.deleteMany(),

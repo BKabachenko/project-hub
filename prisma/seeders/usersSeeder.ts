@@ -1,23 +1,218 @@
-import { faker } from '@faker-js/faker';
-import { createId } from '@paralleldrive/cuid2';
+import { PrismaClient, UserStatus } from '@/generated/prisma';
 
-import { Prisma, PrismaClient, User, UserStatus } from '@/generated/prisma/client';
+const usersData = [
+  {
+    id: 'cltxb9xyz000108l4a1b2c3d4',
+    email: 'john.doe@example.com',
+    emailVerified: new Date('2025-02-15T10:00:00Z'),
+    name: 'John Doe',
+    status: UserStatus.ACTIVE,
+    image: 'https://api.dicebear.com/8.x/avataaars/svg?seed=John',
+    createdAt: new Date('2025-02-14T18:30:00Z'),
+    updatedAt: new Date('2026-05-10T12:00:00Z'),
+  },
+  {
+    id: 'cltxba123000208l4e5f6g7h8',
+    email: 'jane.smith@example.com',
+    emailVerified: new Date('2025-03-01T09:15:00Z'),
+    name: 'Jane Smith',
+    status: UserStatus.ACTIVE,
+    image: 'https://api.dicebear.com/8.x/avataaars/svg?seed=Jane',
+    createdAt: new Date('2025-03-01T09:00:00Z'),
+    updatedAt: new Date('2026-05-11T14:20:00Z'),
+  },
+  {
+    id: 'cltxbb456000308l4i9j0k1l2',
+    email: 'michael.johnson@example.com',
+    emailVerified: new Date('2024-11-20T11:45:00Z'),
+    name: 'Michael Johnson',
+    status: UserStatus.ACTIVE,
+    image: 'https://api.dicebear.com/8.x/avataaars/svg?seed=Michael',
+    createdAt: new Date('2024-11-20T11:00:00Z'),
+    updatedAt: new Date('2026-04-25T16:10:00Z'),
+  },
+  {
+    id: 'cltxbc789000408l4m3n4o5p6',
+    email: 'emily.davis@example.com',
+    emailVerified: null,
+    name: 'Emily Davis',
+    status: UserStatus.ACTIVE,
+    image: 'https://api.dicebear.com/8.x/avataaars/svg?seed=Emily',
+    createdAt: new Date('2026-05-09T08:00:00Z'),
+    updatedAt: new Date('2026-05-09T08:00:00Z'),
+  },
+  {
+    id: 'cltxbd012000508l4q7r8s9t0',
+    email: 'spambot.crypto@example.com',
+    emailVerified: new Date('2025-06-12T14:20:00Z'),
+    name: 'Cheap Crypto',
+    status: UserStatus.BANNED,
+    image: 'https://api.dicebear.com/8.x/avataaars/svg?seed=Crypto',
+    createdAt: new Date('2025-06-10T13:00:00Z'),
+    updatedAt: new Date('2025-06-15T09:00:00Z'),
+  },
+  {
+    id: 'cltxbe345000608l4u1v2w3x4',
+    email: 'sarah.wilson@example.com',
+    emailVerified: new Date('2024-08-05T10:10:00Z'),
+    name: 'Sarah Wilson',
+    status: UserStatus.ACTIVE,
+    image: 'https://api.dicebear.com/8.x/avataaars/svg?seed=Sarah',
+    createdAt: new Date('2024-08-01T12:00:00Z'),
+    updatedAt: new Date('2026-05-01T10:00:00Z'),
+  },
+  {
+    id: 'cltxbf678000708l4y5z6a7b8',
+    email: 'deleted.user@example.com',
+    emailVerified: new Date('2025-01-10T10:00:00Z'),
+    name: 'Deleted User',
+    status: UserStatus.DELETED,
+    image: null,
+    createdAt: new Date('2025-01-05T09:00:00Z'),
+    updatedAt: new Date('2026-02-20T11:00:00Z'),
+  },
+  {
+    id: 'cltxbg901000808l4c9d0e1f2',
+    email: 'david.brown@example.com',
+    emailVerified: new Date('2025-09-22T16:30:00Z'),
+    name: 'David Brown',
+    status: UserStatus.ACTIVE,
+    image: 'https://api.dicebear.com/8.x/avataaars/svg?seed=David',
+    createdAt: new Date('2025-09-22T15:00:00Z'),
+    updatedAt: new Date('2026-04-12T14:00:00Z'),
+  },
+  {
+    id: 'cltxbh234000908l4g3h4i5j6',
+    email: 'olivia.taylor@example.com',
+    emailVerified: new Date('2025-12-01T09:45:00Z'),
+    name: 'Olivia Taylor',
+    status: UserStatus.ACTIVE,
+    image: 'https://api.dicebear.com/8.x/avataaars/svg?seed=Olivia',
+    createdAt: new Date('2025-11-30T18:00:00Z'),
+    updatedAt: new Date('2026-05-10T09:30:00Z'),
+  },
+  {
+    id: 'cltxbi567001008l4k7l8m9n0',
+    email: 'james.anderson@example.com',
+    emailVerified: new Date('2024-05-14T11:11:00Z'),
+    name: 'James Anderson',
+    status: UserStatus.ACTIVE,
+    image: 'https://api.dicebear.com/8.x/avataaars/svg?seed=James',
+    createdAt: new Date('2024-05-14T10:00:00Z'),
+    updatedAt: new Date('2026-03-15T16:45:00Z'),
+  },
+  {
+    id: 'cltxbj890001108l4o1p2q3r4',
+    email: 'william.thomas@example.com',
+    emailVerified: new Date('2025-04-18T14:20:00Z'),
+    name: 'William Thomas',
+    status: UserStatus.ACTIVE,
+    image: 'https://api.dicebear.com/8.x/avataaars/svg?seed=William',
+    createdAt: new Date('2025-04-18T12:00:00Z'),
+    updatedAt: new Date('2026-05-05T11:15:00Z'),
+  },
+  {
+    id: 'cltxbk123001208l4s5t6u7v8',
+    email: 'sophia.jackson@example.com',
+    emailVerified: new Date('2026-01-10T10:00:00Z'),
+    name: 'Sophia Jackson',
+    status: UserStatus.ACTIVE,
+    image: 'https://api.dicebear.com/8.x/avataaars/svg?seed=Sophia',
+    createdAt: new Date('2026-01-09T19:00:00Z'),
+    updatedAt: new Date('2026-04-20T08:30:00Z'),
+  },
+  {
+    id: 'cltxbl456001308l4w9x0y1z2',
+    email: 'benjamin.white@example.com',
+    emailVerified: new Date('2024-10-05T08:00:00Z'),
+    name: 'Benjamin White',
+    status: UserStatus.ACTIVE,
+    image: 'https://api.dicebear.com/8.x/avataaars/svg?seed=Benjamin',
+    createdAt: new Date('2024-10-04T22:00:00Z'),
+    updatedAt: new Date('2026-05-11T10:00:00Z'),
+  },
+  {
+    id: 'cltxbm789001408l4a3b4c5d6',
+    email: 'isabella.harris@example.com',
+    emailVerified: new Date('2025-07-25T13:40:00Z'),
+    name: 'Isabella Harris',
+    status: UserStatus.ACTIVE,
+    image: 'https://api.dicebear.com/8.x/avataaars/svg?seed=Isabella',
+    createdAt: new Date('2025-07-24T15:00:00Z'),
+    updatedAt: new Date('2026-05-02T17:20:00Z'),
+  },
+  {
+    id: 'cltxbn012001508l4e7f8g9h0',
+    email: 'lucas.martin@example.com',
+    emailVerified: new Date('2025-11-11T11:11:00Z'),
+    name: 'Lucas Martin',
+    status: UserStatus.ACTIVE,
+    image: 'https://api.dicebear.com/8.x/avataaars/svg?seed=Lucas',
+    createdAt: new Date('2025-11-10T10:00:00Z'),
+    updatedAt: new Date('2026-03-30T12:00:00Z'),
+  },
+  {
+    id: 'cltxbo345001608l4i1j2k3l4',
+    email: 'mia.thompson@example.com',
+    emailVerified: new Date('2024-02-28T09:30:00Z'),
+    name: 'Mia Thompson',
+    status: UserStatus.ACTIVE,
+    image: 'https://api.dicebear.com/8.x/avataaars/svg?seed=Mia',
+    createdAt: new Date('2024-02-27T18:00:00Z'),
+    updatedAt: new Date('2026-05-08T09:10:00Z'),
+  },
+  {
+    id: 'cltxbp678001708l4m5n6o7p8',
+    email: 'ethan.garcia@example.com',
+    emailVerified: null,
+    name: 'Ethan Garcia',
+    status: UserStatus.ACTIVE,
+    image: 'https://api.dicebear.com/8.x/avataaars/svg?seed=Ethan',
+    createdAt: new Date('2026-05-10T14:00:00Z'),
+    updatedAt: new Date('2026-05-10T14:00:00Z'),
+  },
+  {
+    id: 'cltxbq901001808l4q9r0s1t2',
+    email: 'amelia.martinez@example.com',
+    emailVerified: new Date('2025-08-19T17:50:00Z'),
+    name: 'Amelia Martinez',
+    status: UserStatus.ACTIVE,
+    image: 'https://api.dicebear.com/8.x/avataaars/svg?seed=Amelia',
+    createdAt: new Date('2025-08-18T11:00:00Z'),
+    updatedAt: new Date('2026-01-25T16:00:00Z'),
+  },
+  {
+    id: 'cltxbr234001908l4u3v4w5x6',
+    email: 'alexander.robinson@example.com',
+    emailVerified: new Date('2026-03-08T12:00:00Z'),
+    name: 'Alexander Robinson',
+    status: UserStatus.ACTIVE,
+    image: 'https://api.dicebear.com/8.x/avataaars/svg?seed=Alexander',
+    createdAt: new Date('2026-03-08T10:00:00Z'),
+    updatedAt: new Date('2026-05-11T09:00:00Z'),
+  },
+  {
+    id: 'cltxbs567002008l4y7z8a9b0',
+    email: 'charlotte.clark@example.com',
+    emailVerified: new Date('2024-12-31T23:50:00Z'),
+    name: 'Charlotte Clark',
+    status: UserStatus.ACTIVE,
+    image: 'https://api.dicebear.com/8.x/avataaars/svg?seed=Charlotte',
+    createdAt: new Date('2024-12-30T20:00:00Z'),
+    updatedAt: new Date('2026-05-07T18:45:00Z'),
+  },
+];
 
-export async function seedUsers(prisma: PrismaClient, count: number): Promise<User[]> {
-  console.log(`Generating ${count} users...`);
+export async function seedUsers(prisma: PrismaClient) {
+  console.log('Starting User seed...');
 
-  const usersData: Prisma.UserCreateManyInput[] = Array.from({ length: count }).map(() => ({
-    id: createId(),
-    email: faker.helpers.uniqueArray(faker.internet.email, 1)[0],
-    emailVerified: faker.datatype.boolean() ? faker.date.recent() : null,
-    name: faker.person.fullName(),
-    status: faker.helpers.arrayElement(Object.values(UserStatus)),
-    image: faker.image.avatar(),
-  }));
+  for (const user of usersData) {
+    await prisma.user.upsert({
+      where: { email: user.email! },
+      update: {},
+      create: user,
+    });
+  }
 
-  await prisma.user.createMany({ data: usersData });
-
-  console.log(`Successfully created ${usersData.length} users.`);
-
-  return prisma.user.findMany();
+  console.log(`Successfully seeded ${usersData.length} users.`);
 }
