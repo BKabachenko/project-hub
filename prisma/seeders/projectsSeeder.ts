@@ -1,37 +1,289 @@
-import { faker } from '@faker-js/faker';
-import { createId } from '@paralleldrive/cuid2';
+import { PrismaClient, ProjectCategory, ProjectStatus, ProjectType } from '@/generated/prisma';
 
-import {
-  Prisma,
-  PrismaClient,
-  Project,
-  ProjectCategory,
-  ProjectStatus,
-  ProjectType,
-  User,
-} from '@/generated/prisma/client';
+const projectsData = [
+  {
+    id: 'cproj1xyz000108l4a1b2c3d4',
+    authorId: 'cltxb9xyz000108l4a1b2c3d4',
+    title: 'DevCollab Hub',
+    description:
+      'An open-source platform designed to help junior and middle developers find pet projects to work on together. The platform will feature real-time chat, project management boards, and integration with GitHub to track contributions. We are currently looking to build the MVP and need UI/UX designers and full-stack developers.',
+    category: ProjectCategory.SOCIAL_NETWORK,
+    type: [ProjectType.OPEN_SOURCE, ProjectType.PET_PROJECT],
+    status: ProjectStatus.ACTIVE,
+    gitUrl: 'https://github.com/johndoe/devcollab-hub',
+    createdAt: new Date('2025-05-10T10:00:00Z'),
+    updatedAt: new Date('2026-01-15T12:00:00Z'),
+  },
+  {
+    id: 'cproj2xyz000208l4e5f6g7h8',
+    authorId: 'cltxba123000208l4e5f6g7h8',
+    title: 'EduTrack Pro',
+    description:
+      'A comprehensive LMS (Learning Management System) aimed at small online schools. Features include student progress tracking, automated quiz grading, and video streaming for lectures. We are building this as a commercial SaaS product and need experienced backend developers to handle video transcoding and database optimization.',
+    category: ProjectCategory.EDUCATION,
+    type: [ProjectType.PET_PROJECT, ProjectType.CHARITY],
+    status: ProjectStatus.ACTIVE,
+    gitUrl: null,
+    createdAt: new Date('2025-06-20T14:30:00Z'),
+    updatedAt: new Date('2026-02-10T09:45:00Z'),
+  },
+  {
+    id: 'cproj3xyz000308l4i9j0k1l2',
+    authorId: 'cltxbb456000308l4i9j0k1l2',
+    title: 'CryptoFolio Tracker',
+    description:
+      'A simple, privacy-focused pet project to track cryptocurrency portfolios without needing to connect your wallet directly. It will use public APIs to fetch coin prices and calculate PnL over time. Great for frontend developers looking to practice data visualization with Recharts or Chart.js.',
+    category: ProjectCategory.FINANCE,
+    type: [ProjectType.PET_PROJECT],
+    status: ProjectStatus.FINISHED,
+    gitUrl: 'https://github.com/mjohnson/cryptofolio',
+    createdAt: new Date('2024-12-01T08:00:00Z'),
+    updatedAt: new Date('2025-03-25T16:20:00Z'),
+  },
+  {
+    id: 'cproj4xyz000408l4m3n4o5p6',
+    authorId: 'cltxbc789000408l4m3n4o5p6',
+    title: 'MediBook App',
+    description:
+      'A healthcare booking application meant to streamline the process of finding local doctors and scheduling appointments. The MVP will include doctor search, a calendar widget, and push notifications for appointment reminders. Seeking mobile developers (React Native or Flutter) to take the lead on the app.',
+    category: ProjectCategory.HEALTHCARE,
+    type: [ProjectType.COMMERCIAL],
+    status: ProjectStatus.ACTIVE,
+    gitUrl: 'https://github.com/emilydavis/medibook-frontend',
+    createdAt: new Date('2026-05-09T09:00:00Z'),
+    updatedAt: new Date('2026-05-10T10:00:00Z'),
+  },
+  {
+    id: 'cproj5xyz000508l4q7r8s9t0',
+    authorId: 'cltxbe345000608l4u1v2w3x4',
+    title: 'PawConnect',
+    description:
+      'A fun social network specifically for pet owners to arrange playdates for their dogs. Users can create profiles for their pets, upload pictures, and match with other pets in their area using geolocation. This is purely for fun and learning.',
+    category: ProjectCategory.SOCIAL_NETWORK,
+    type: [ProjectType.PET_PROJECT],
+    status: ProjectStatus.ACTIVE,
+    gitUrl: 'https://github.com/sarahwilson/pawconnect',
+    createdAt: new Date('2024-09-15T11:00:00Z'),
+    updatedAt: new Date('2026-04-20T13:30:00Z'),
+  },
+  {
+    id: 'cproj6xyz000608l4u1v2w3x4',
+    authorId: 'cltxbg901000808l4c9d0e1f2',
+    title: 'AI Travel Itinerary Generator',
+    description:
+      'Using OpenAI APIs to generate personalized, day-by-day travel itineraries based on budget, weather, and user preferences. The backend will be in Node.js and the frontend in Next.js. We need someone good with prompt engineering and a frontend dev with a good eye for design.',
+    category: ProjectCategory.ARTIFICIAL_INTELLIGENCE,
+    type: [ProjectType.PET_PROJECT, ProjectType.OPEN_SOURCE],
+    status: ProjectStatus.ACTIVE,
+    gitUrl: 'https://github.com/davidb/ai-travel-gen',
+    createdAt: new Date('2025-10-10T15:00:00Z'),
+    updatedAt: new Date('2026-05-01T11:00:00Z'),
+  },
+  {
+    id: 'cproj7xyz000708l4y5z6a7b8',
+    authorId: 'cltxbh234000908l4g3h4i5j6',
+    title: 'GreenEat Delivery Hub',
+    description:
+      'A marketplace aggregator connecting users with local organic and vegan food suppliers. The system requires complex logistics algorithms for delivery routing. Looking to assemble a serious team to eventually seek startup funding.',
+    category: ProjectCategory.FOOD_DELIVERY,
+    type: [ProjectType.COMMERCIAL],
+    status: ProjectStatus.ACTIVE,
+    gitUrl: null,
+    createdAt: new Date('2025-12-05T09:30:00Z'),
+    updatedAt: new Date('2026-05-10T14:15:00Z'),
+  },
+  {
+    id: 'cproj8xyz000808l4c9d0e1f2',
+    authorId: 'cltxbi567001008l4k7l8m9n0',
+    title: 'NextJS Boilerplate Pro',
+    description:
+      'I am creating the ultimate boilerplate for Next.js applications, complete with Auth.js, Prisma, Tailwind CSS, Stripe integration, and i18n out of the box. This will be an open-source tool for the community. Need contributors for testing and writing documentation.',
+    category: ProjectCategory.PRODUCTIVITY,
+    type: [ProjectType.OPEN_SOURCE],
+    status: ProjectStatus.FINISHED,
+    gitUrl: 'https://github.com/janderson/nextjs-boilerplate-pro',
+    createdAt: new Date('2024-06-01T10:00:00Z'),
+    updatedAt: new Date('2025-08-20T12:00:00Z'),
+  },
+  {
+    id: 'cproj9xyz000908l4g3h4i5j6',
+    authorId: 'cltxbj890001108l4o1p2q3r4',
+    title: 'Junior Jobs Board',
+    description:
+      'A non-profit job board dedicated entirely to internships and junior-level developer positions. The goal is to help newcomers find their first job. The platform will be completely free for applicants and employers. Seeking volunteers to build and maintain the site.',
+    category: ProjectCategory.JOB_BOARD,
+    type: [ProjectType.CHARITY, ProjectType.OPEN_SOURCE],
+    status: ProjectStatus.ACTIVE,
+    gitUrl: 'https://github.com/williamt/junior-jobs',
+    createdAt: new Date('2025-05-20T16:00:00Z'),
+    updatedAt: new Date('2026-04-10T09:30:00Z'),
+  },
+  {
+    id: 'cproj10xyz001008l4k7l8m9n0',
+    authorId: 'cltxbk123001208l4s5t6u7v8',
+    title: 'VR Fitness Coach',
+    description:
+      'An experimental project exploring the use of AR/VR headsets for interactive home fitness routines. The app will track user movements and provide real-time feedback. Need developers familiar with Unity, WebXR, or 3D modeling.',
+    category: ProjectCategory.AR_VR,
+    type: [ProjectType.PET_PROJECT],
+    status: ProjectStatus.ACTIVE,
+    gitUrl: 'https://github.com/sophiaj/vr-fitness',
+    createdAt: new Date('2026-02-15T11:20:00Z'),
+    updatedAt: new Date('2026-05-05T14:00:00Z'),
+  },
+  {
+    id: 'cproj11xyz001108l4o1p2q3r4',
+    authorId: 'cltxbl456001308l4w9x0y1z2',
+    title: 'PropTech Analytics',
+    description:
+      'A B2B SaaS platform that analyzes real estate market trends using scraped data and machine learning. Helps investors identify undervalued properties. Currently validating the idea and looking for a Data Scientist to build the core ML model.',
+    category: ProjectCategory.REAL_ESTATE,
+    type: [ProjectType.CHARITY, ProjectType.OPEN_SOURCE],
+    status: ProjectStatus.ACTIVE,
+    gitUrl: null,
+    createdAt: new Date('2025-11-10T08:00:00Z'),
+    updatedAt: new Date('2026-04-22T10:10:00Z'),
+  },
+  {
+    id: 'cproj12xyz001208l4s5t6u7v8',
+    authorId: 'cltxbm789001408l4a3b4c5d6',
+    title: 'IndieWave Player',
+    description:
+      'A music streaming platform dedicated exclusively to indie artists without a record label. We offer a fairer revenue split and better discoverability. Project is currently in a closed beta state. Seeking DevOps engineers to scale our AWS infrastructure.',
+    category: ProjectCategory.MUSIC,
+    type: [ProjectType.COMMERCIAL, ProjectType.OPEN_SOURCE],
+    status: ProjectStatus.ACTIVE,
+    gitUrl: null,
+    createdAt: new Date('2025-08-14T12:00:00Z'),
+    updatedAt: new Date('2026-05-08T16:45:00Z'),
+  },
+  {
+    id: 'cproj13xyz001308l4w9x0y1z2',
+    authorId: 'cltxbn012001508l4e7f8g9h0',
+    title: 'Local Hero Crowdfunding',
+    description:
+      'A micro-crowdfunding platform for local community projects (e.g., renovating a local park, funding a school trip). Aimed at providing transparency via blockchain smart contracts for fund distribution. Need a Web3/Solidity developer.',
+    category: ProjectCategory.CROWDFUNDING,
+    type: [ProjectType.CHARITY, ProjectType.PET_PROJECT],
+    status: ProjectStatus.ACTIVE,
+    gitUrl: 'https://github.com/lucasm/local-hero',
+    createdAt: new Date('2025-12-20T10:30:00Z'),
+    updatedAt: new Date('2026-03-12T11:15:00Z'),
+  },
+  {
+    id: 'cproj14xyz001408l4a3b4c5d6',
+    authorId: 'cltxbo345001608l4i1j2k3l4',
+    title: 'Cyber Audit Script',
+    description:
+      'A lightweight, open-source CLI tool written in Rust to automatically scan Next.js repositories for common security vulnerabilities and misconfigurations. Seeking contributors with a background in cybersecurity and Rust programming.',
+    category: ProjectCategory.CYBERSECURITY,
+    type: [ProjectType.OPEN_SOURCE],
+    status: ProjectStatus.FINISHED,
+    gitUrl: 'https://github.com/miathomp/audit-script',
+    createdAt: new Date('2024-03-01T09:00:00Z'),
+    updatedAt: new Date('2025-01-10T14:30:00Z'),
+  },
+  {
+    id: 'cproj15xyz001508l4e7f8g9h0',
+    authorId: 'cltxbp678001708l4m5n6o7p8',
+    title: 'GitMatch',
+    description:
+      'A dating app specifically for developers. It uses your GitHub commit history and programming language preferences as part of the matching algorithm. Just a fun pet project to practice real-time WebSockets for chatting.',
+    category: ProjectCategory.DATING,
+    type: [ProjectType.PET_PROJECT],
+    status: ProjectStatus.CLOSED,
+    gitUrl: 'https://github.com/ethang/gitmatch',
+    createdAt: new Date('2026-05-10T14:15:00Z'),
+    updatedAt: new Date('2026-05-11T09:00:00Z'),
+  },
+  {
+    id: 'cproj16xyz001608l4i1j2k3l4',
+    authorId: 'cltxbq901001808l4q9r0s1t2',
+    title: 'DataViz SaaS Core',
+    description:
+      'Building the core engine for a B2B analytics dashboard that integrates with multiple CRMs (Salesforce, HubSpot) to provide unified visual reporting. The architecture is microservices-based. We need experienced Backend developers (Go or Node.js).',
+    category: ProjectCategory.ANALYTICS,
+    type: [ProjectType.PET_PROJECT, ProjectType.OPEN_SOURCE],
+    status: ProjectStatus.ACTIVE,
+    gitUrl: null,
+    createdAt: new Date('2025-09-05T11:45:00Z'),
+    updatedAt: new Date('2026-04-30T10:20:00Z'),
+  },
+  {
+    id: 'cproj17xyz001708l4m5n6o7p8',
+    authorId: 'cltxbr234001908l4u3v4w5x6',
+    title: 'Smart Garden IoT Hub',
+    description:
+      'An open-source software hub for Raspberry Pi to control automated watering systems, track soil moisture, and monitor UV light using cheap sensors. The web dashboard needs to be rewritten from Vue to React. Looking for frontend help.',
+    category: ProjectCategory.IOT,
+    type: [ProjectType.OPEN_SOURCE, ProjectType.PET_PROJECT],
+    status: ProjectStatus.ACTIVE,
+    gitUrl: 'https://github.com/alexrobinson/smart-garden',
+    createdAt: new Date('2026-03-10T16:00:00Z'),
+    updatedAt: new Date('2026-05-02T12:00:00Z'),
+  },
+  {
+    id: 'cproj18xyz001808l4q9r0s1t2',
+    authorId: 'cltxbs567002008l4y7z8a9b0',
+    title: 'Pixel Quest RPG',
+    description:
+      'Developing a 2D pixel art RPG using the Phaser.js framework. The game will feature a complex dialogue system and turn-based combat. We currently have a game designer and need a TypeScript developer who loves gaming to help with the game logic.',
+    category: ProjectCategory.GAMING,
+    type: [ProjectType.PET_PROJECT],
+    status: ProjectStatus.ACTIVE,
+    gitUrl: 'https://github.com/cclark/pixel-quest',
+    createdAt: new Date('2025-01-20T09:00:00Z'),
+    updatedAt: new Date('2026-04-15T15:30:00Z'),
+  },
+  {
+    id: 'cproj19xyz001908l4u3v4w5x6',
+    authorId: 'cltxb9xyz000108l4a1b2c3d4',
+    title: 'Logistics Route Optimizer',
+    description:
+      'An algorithm-heavy project aimed at solving the traveling salesperson problem for local delivery trucks taking traffic data into account. Highly mathematical. Perfect for a data scientist or algorithm specialist looking for a challenge.',
+    category: ProjectCategory.LOGISTICS,
+    type: [ProjectType.OPEN_SOURCE],
+    status: ProjectStatus.ACTIVE,
+    gitUrl: 'https://github.com/johndoe/route-optimizer',
+    createdAt: new Date('2026-01-05T13:00:00Z'),
+    updatedAt: new Date('2026-03-22T09:45:00Z'),
+  },
+  {
+    id: 'cproj20xyz002008l4y7z8a9b0',
+    authorId: 'cltxba123000208l4e5f6g7h8',
+    title: 'Event Streaming Engine',
+    description:
+      'Building a robust, low-latency live video streaming server configuration meant to be deployed on Kubernetes. This is a highly technical DevOps and Backend project aiming to create a scalable alternative to existing proprietary solutions.',
+    category: ProjectCategory.STREAMING,
+    type: [ProjectType.PET_PROJECT],
+    status: ProjectStatus.ACTIVE,
+    gitUrl: 'https://github.com/janesmith/event-streamer',
+    createdAt: new Date('2025-07-11T10:00:00Z'),
+    updatedAt: new Date('2026-04-01T11:20:00Z'),
+  },
+];
 
-export async function seedProjects(
-  prisma: PrismaClient,
-  users: User[],
-  count: number
-): Promise<Project[]> {
-  console.log(`Generating ${count} projects...`);
+export async function seedProjects(prisma: PrismaClient) {
+  console.log('Starting Project seed...');
 
-  const projectsData: Prisma.ProjectCreateManyInput[] = Array.from({ length: count }).map(() => ({
-    id: createId(),
-    authorId: faker.helpers.arrayElement(users).id,
-    title: faker.company.name(),
-    description: faker.lorem.paragraphs(2),
-    category: faker.helpers.arrayElement(Object.values(ProjectCategory)),
-    type: [faker.helpers.arrayElement(Object.values(ProjectType))],
-    status: faker.helpers.arrayElement(Object.values(ProjectStatus)),
-    requiredParticipants: faker.number.int({ min: 1, max: 10 }),
-  }));
+  for (const project of projectsData) {
+    await prisma.project.upsert({
+      where: { id: project.id },
+      update: {},
+      create: {
+        id: project.id,
+        authorId: project.authorId,
+        title: project.title,
+        description: project.description,
+        category: project.category,
+        type: project.type,
+        status: project.status,
+        gitUrl: project.gitUrl,
+        createdAt: project.createdAt,
+        updatedAt: project.updatedAt,
+      },
+    });
+  }
 
-  await prisma.project.createMany({ data: projectsData });
-
-  console.log(`Successfully created ${projectsData.length} projects.`);
-
-  return prisma.project.findMany();
+  console.log(`Successfully seeded ${projectsData.length} projects.`);
 }

@@ -30,50 +30,57 @@ model User {
   projectReviews     ProjectReview[]
   accounts           Account[]
   sessions           Session[]
+  applications       Application[]
 }
 
 model Project {
-  id                   String          @id @default(cuid())
-  authorId             String
-  title                String
-  description          String
-  category             ProjectCategory
-  type                 ProjectType[]
-  status               ProjectStatus   @default(ACTIVE)
-  requiredParticipants Int             @default(1)
-  createdAt            DateTime        @default(now())
-  updatedAt            DateTime        @updatedAt
+  id          String          @id @default(cuid())
+  authorId    String
+  title       String
+  description String
+  category    ProjectCategory
+  type        ProjectType[]
+  status      ProjectStatus   @default(ACTIVE)
+  gitUrl      String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 
   authorUser       User                 @relation(fields: [authorId], references: [id])
   projectMembers   ProjectMember[]
   projectReviews   ProjectReview[]
   membersReviews   UserReview[]
   projectPositions ProjectRequirement[]
+  milestones       Milestone[]
 }
 
 model ProjectMember {
-  userId    String
-  projectId String
-  status    ProjectMemberStatus
-  role      MemberRole
-  joinedAt  DateTime            @default(now())
+  id            String              @id @default(cuid())
+  userId        String
+  projectId     String
+  requirementId String
+  status        ProjectMemberStatus @default(ACTIVE)
+  joinedAt      DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
 
-  user    User    @relation(fields: [userId], references: [id])
-  project Project @relation(fields: [projectId], references: [id])
+  user        User               @relation(fields: [userId], references: [id])
+  project     Project            @relation(fields: [projectId], references: [id])
+  requirement ProjectRequirement @relation(fields: [requirementId], references: [id])
 
-  @@id([userId, projectId, role])
+  @@unique([userId, requirementId])
 }
 
 model ProjectRequirement {
+  id            String     @id @default(cuid())
   projectId     String
   role          MemberRole
   requiredCount Int        @default(1)
+  techStack     String[]   @default([])
   createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 
-  project Project @relation(fields: [projectId], references: [id])
-
-  @@id([projectId, role])
+  project      Project         @relation(fields: [projectId], references: [id])
+  applications Application[]
+  members      ProjectMember[]
 }
 
 model ProjectReview {
@@ -104,6 +111,36 @@ model UserReview {
   project      Project @relation(fields: [projectId], references: [id])
 
   @@id([authorId, targetId, projectId])
+}
+
+model Application {
+  id            String            @id @default(cuid())
+  userId        String
+  requirementId String
+  status        ApplicationStatus @default(PENDING)
+  coverLetter   String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  user        User               @relation(fields: [userId], references: [id])
+  requirement ProjectRequirement @relation(fields: [requirementId], references: [id])
+
+  @@unique([userId, requirementId])
+}
+
+model Milestone {
+  id          String          @id @default(cuid())
+  projectId   String
+  title       String
+  description String?
+  status      MilestoneStatus @default(PLANNED)
+  order       Int
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@unique([projectId, order])
 }
 
 model Account {
@@ -172,9 +209,9 @@ enum ProjectStatus {
 }
 
 enum ProjectMemberStatus {
-  PENDING
-  APPROVED
-  DECLINED
+  ACTIVE
+  LEFT
+  REMOVED
 }
 
 enum ProjectCategory {
@@ -215,4 +252,18 @@ enum ProjectType {
   COMMERCIAL
   OPEN_SOURCE
   CHARITY
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  DECLINED
+  WITHDRAWN
+}
+
+enum MilestoneStatus {
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
 }
