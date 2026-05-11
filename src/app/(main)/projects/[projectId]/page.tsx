@@ -25,7 +25,7 @@ const getProject = cache(async (projectId: string) => {
       authorUser: true,
       _count: {
         select: {
-          projectMembers: { where: { status: 'APPROVED' } },
+          projectMembers: { where: { status: 'ACTIVE' } },
         },
       },
     },
