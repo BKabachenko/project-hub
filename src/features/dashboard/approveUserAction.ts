@@ -1,119 +1,158 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
+
+import {
+  PrismaClientKnownRequestError,
+  PrismaClientUnknownRequestError,
+} from '@prisma/client-runtime-utils';
 import z from 'zod';
 
 import { auth } from '@/auth';
-import { MemberRole } from '@/generated/prisma';
 import type { ActionState } from '@/lib/constants';
 import prisma from '@/lib/prisma';
-import { revalidatePath } from 'next/cache';
 
 interface approveUserProps {
-  memberId: string;
+  applicantId: string;
   projectId: string;
-  role: MemberRole;
+  requirementId: string;
 }
 const applySchema = z.object({
   projectId: z.cuid2(),
-  memberId: z.cuid2(),
-  role: z.enum(MemberRole),
+  applicantId: z.cuid2(),
+  requirementId: z.cuid2(),
 });
 
 const approveUserAction = async ({
   projectId,
-  memberId,
-  role,
+  applicantId: memberId,
+  requirementId,
 }: approveUserProps): Promise<ActionState> => {
   const session = await auth();
   if (!session) return { success: false, message: 'Unathoraized user!' };
   const userId = session.user?.id;
 
-  const validatedData = applySchema.safeParse({
+  const vData = applySchema.safeParse({
     projectId: projectId,
     memberId: memberId,
-    role: role,
+    requirementId: requirementId,
   });
 
-  if (!validatedData.success) {
+  if (!vData.success) {
     return {
       success: false,
       message: 'Please rework mistakes!',
     };
   }
 
-  const project = await prisma.project.findUnique({
-    where: {
-      id: projectId,
-    },
-    include: {
-      projectMembers: {
-        where: {
-          role: validatedData.data.role,
-        },
-      },
-      projectPositions: {
-        where: {
-          role: validatedData.data.role,
-        },
-        select: {
-          requiredCount: true,
-        },
-      },
-    },
-  });
-
-  if (!project) {
-    return { success: false, message: 'Project does not exist.' };
-  }
-
-  if (project.authorId !== userId) {
-    return { success: false, message: 'You do not have permission to modify this project.' };
-  }
-
-  const userApplication = project.projectMembers.find(
-    (member) => member.userId === validatedData.data.memberId
-  );
-
-  if (!userApplication) {
-    return { success: false, message: 'Application not found.' };
-  }
-
-  if (userApplication.status === 'APPROVED') {
-    return { success: false, message: 'User is already approved for this role.' };
-  }
-
-  const positionCount = project.projectPositions[0]?.requiredCount || 0;
-
-  const alreadyInRoleCount = project.projectMembers.filter(
-    (member) => member.status === 'APPROVED'
-  ).length;
-
-  if (positionCount <= alreadyInRoleCount) {
-    return { success: false, message: 'No available slots for this role.' };
-  }
-
   try {
-    const result = await prisma.projectMember.updateMany({
-      where: {
-        projectId: validatedData.data.projectId,
-        userId: validatedData.data.memberId,
-        role: validatedData.data.role,
-        status: 'PENDING',
-      },
-      data: {
-        status: 'APPROVED',
-      },
-    });
+    await prisma.$transaction(
+      async (tx) => {
+        const project = await tx.project.findUnique({
+          where: {
+            id: vData.data.projectId,
+          },
+          include: {
+            projectPositions: {
+              where: {
+                id: vData.data.requirementId,
+              },
+              include: {
+                applications: {
+                  where: {
+                    userId: vData.data.applicantId,
+                  },
+                  select: { userId: true, status: true, requirementId: true },
+                },
+              },
+            },
+            projectMembers: {
+              where: {
+                requirementId: vData.data.requirementId,
+                status: 'ACTIVE',
+              },
+            },
+          },
+        });
 
-    if (result.count === 0) {
-      return {
-        success: false,
-        message: 'Application is no longer pending or was not found.',
-      };
+        if (!project) {
+          throw new Error('Project does not exist.');
+        }
+
+        if (project.authorId !== userId) {
+          throw new Error('You do not have permission to modify this project.');
+        }
+
+        if (project.status != 'ACTIVE') {
+          throw new Error('Project does not active.');
+        }
+
+        if (project.projectPositions.length != 1) {
+          throw new Error('Application not found.');
+        }
+
+        if (project.projectPositions[0].requiredCount <= project.projectMembers.length) {
+          throw new Error('Dont enought empty slots in this position.');
+        }
+
+        const isUserInMembers = project.projectMembers.some(
+          (member) => member.userId === vData.data.applicantId
+        );
+        if (isUserInMembers) {
+          throw new Error('User is already approved for this role.');
+        }
+
+        if (project.projectPositions[0].applications[0].status != 'PENDING') {
+          throw new Error('User dont have pending application.');
+        }
+
+        await tx.projectMember.upsert({
+          where: {
+            userId_requirementId: {
+              requirementId: vData.data.requirementId,
+              userId: vData.data.applicantId,
+            },
+          },
+          update: {
+            status: 'ACTIVE',
+          },
+          create: {
+            userId: vData.data.applicantId,
+            projectId: vData.data.projectId,
+            requirementId: vData.data.requirementId,
+            status: 'ACTIVE',
+          },
+        });
+
+        await tx.application.update({
+          where: {
+            userId_requirementId: {
+              requirementId: vData.data.requirementId,
+              userId: vData.data.applicantId,
+            },
+          },
+          data: {
+            status: 'APPROVED',
+          },
+        });
+        console.log('all ok');
+        throw new Error('test error');
+      },
+      { isolationLevel: 'RepeatableRead' }
+    );
+  } catch (error) {
+    if (error instanceof PrismaClientKnownRequestError) {
+      return { success: false, message: 'Known prisma error.' };
     }
-  } catch (err) {
-    console.error(err);
-    return { success: false, message: 'Failed to update application status.' };
+
+    if (error instanceof PrismaClientUnknownRequestError) {
+      return { success: false, message: 'Unknown prisma error.' };
+    }
+
+    if (error instanceof Error) {
+      return { success: false, message: error.message };
+    }
+    return { success: false, message: 'Unknown error.' };
   }
   return { success: true, message: 'User successfully approved!' };
 };
