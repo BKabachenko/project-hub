@@ -12,30 +12,34 @@ import { auth } from '@/auth';
 import type { ActionState } from '@/lib/constants';
 import prisma from '@/lib/prisma';
 
-interface approveUserProps {
+export interface ResolveApplicationProps {
   applicantId: string;
   projectId: string;
   requirementId: string;
+  action: 'approve' | 'decline';
 }
-const applySchema = z.object({
+const resolveApplicationSchema = z.object({
   projectId: z.cuid2(),
   applicantId: z.cuid2(),
   requirementId: z.cuid2(),
+  action: z.enum(['approve', 'decline']),
 });
 
-const approveUserAction = async ({
+const resolveApplicationAction = async ({
   projectId,
-  applicantId: memberId,
+  applicantId,
   requirementId,
-}: approveUserProps): Promise<ActionState> => {
+  action,
+}: ResolveApplicationProps): Promise<ActionState> => {
   const session = await auth();
-  if (!session) return { success: false, message: 'Unathoraized user!' };
+  if (!session) return { success: false, message: 'Unauthorized user!' };
   const userId = session.user?.id;
 
-  const vData = applySchema.safeParse({
+  const vData = resolveApplicationSchema.safeParse({
     projectId: projectId,
-    memberId: memberId,
+    applicantId: applicantId,
     requirementId: requirementId,
+    action: action,
   });
 
   if (!vData.success) {
@@ -46,18 +50,21 @@ const approveUserAction = async ({
   }
 
   try {
-    await prisma.$transaction(
+    const result = await prisma.$transaction(
       async (tx) => {
         const project = await tx.project.findUnique({
           where: {
             id: vData.data.projectId,
           },
-          include: {
+          select: {
+            authorId: true,
+            status: true,
             projectPositions: {
               where: {
                 id: vData.data.requirementId,
               },
-              include: {
+              select: {
+                requiredCount: true,
                 applications: {
                   where: {
                     userId: vData.data.applicantId,
@@ -70,6 +77,9 @@ const approveUserAction = async ({
               where: {
                 requirementId: vData.data.requirementId,
                 status: 'ACTIVE',
+              },
+              select: {
+                userId: true,
               },
             },
           },
@@ -91,55 +101,79 @@ const approveUserAction = async ({
           throw new Error('Application not found.');
         }
 
-        if (project.projectPositions[0].requiredCount <= project.projectMembers.length) {
-          throw new Error('Dont enought empty slots in this position.');
-        }
-
-        const isUserInMembers = project.projectMembers.some(
-          (member) => member.userId === vData.data.applicantId
-        );
-        if (isUserInMembers) {
-          throw new Error('User is already approved for this role.');
-        }
-
         if (project.projectPositions[0].applications[0].status != 'PENDING') {
           throw new Error('User dont have pending application.');
         }
 
-        await tx.projectMember.upsert({
-          where: {
-            userId_requirementId: {
-              requirementId: vData.data.requirementId,
-              userId: vData.data.applicantId,
-            },
-          },
-          update: {
-            status: 'ACTIVE',
-          },
-          create: {
-            userId: vData.data.applicantId,
-            projectId: vData.data.projectId,
-            requirementId: vData.data.requirementId,
-            status: 'ACTIVE',
-          },
-        });
+        if (vData.data.action === 'approve') {
+          if (project.projectPositions[0].requiredCount <= project.projectMembers.length) {
+            throw new Error('Dont enought empty slots in this position.');
+          }
 
-        await tx.application.update({
-          where: {
-            userId_requirementId: {
-              requirementId: vData.data.requirementId,
-              userId: vData.data.applicantId,
+          const isUserInMembers = project.projectMembers.some(
+            (member) => member.userId === vData.data.applicantId
+          );
+
+          if (isUserInMembers) {
+            throw new Error('User is already approved for this role.');
+          }
+
+          await tx.projectMember.upsert({
+            where: {
+              userId_requirementId: {
+                requirementId: vData.data.requirementId,
+                userId: vData.data.applicantId,
+              },
             },
-          },
-          data: {
-            status: 'APPROVED',
-          },
-        });
-        console.log('all ok');
-        throw new Error('test error');
+            update: {
+              status: 'ACTIVE',
+            },
+            create: {
+              userId: vData.data.applicantId,
+              projectId: vData.data.projectId,
+              requirementId: vData.data.requirementId,
+              status: 'ACTIVE',
+            },
+          });
+
+          await tx.application.update({
+            where: {
+              userId_requirementId: {
+                requirementId: vData.data.requirementId,
+                userId: vData.data.applicantId,
+              },
+            },
+            data: {
+              status: 'APPROVED',
+            },
+          });
+
+          return { success: true, message: 'User successfully approved!' };
+        }
+
+        if (vData.data.action === 'decline') {
+          await tx.application.update({
+            where: {
+              userId_requirementId: {
+                requirementId: vData.data.requirementId,
+                userId: vData.data.applicantId,
+              },
+            },
+            data: {
+              status: 'DECLINED',
+            },
+          });
+
+          return { success: true, message: 'User successfully declined!' };
+        }
+
+        throw new Error('Unexpected action.');
       },
       { isolationLevel: 'RepeatableRead' }
     );
+
+    revalidatePath('/dashboard');
+    return result;
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
       return { success: false, message: 'Known prisma error.' };
@@ -154,7 +188,6 @@ const approveUserAction = async ({
     }
     return { success: false, message: 'Unknown error.' };
   }
-  return { success: true, message: 'User successfully approved!' };
 };
 
-export default approveUserAction;
+export default resolveApplicationAction;
