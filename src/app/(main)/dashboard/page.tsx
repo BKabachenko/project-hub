@@ -19,24 +19,51 @@ const DashboardPage = async () => {
             some: {
               userId: session.user?.id,
               status: {
-                in: ['APPROVED', 'PENDING'],
+                in: ['ACTIVE'],
               },
             },
           },
         },
       ],
     },
-    include: {
-      projectPositions: true,
-      projectMembers: {
+    select: {
+      id: true,
+      title: true,
+      createdAt: true,
+      authorId: true,
+      projectPositions: {
         where: {
-          status: {
-            in: ['APPROVED', 'PENDING'],
+          project: {
+            authorId: session.user?.id,
           },
         },
-        include: {
-          user: {
-            select: { id: true, name: true, updatedAt: true, image: true },
+        select: {
+          requiredCount: true,
+          applications: {
+            where: {
+              status: 'PENDING',
+            },
+            include: {
+              user: {
+                select: { id: true, name: true, updatedAt: true, image: true },
+              },
+              requirement: {
+                select: { role: true, projectId: true, id: true },
+              },
+            },
+          },
+        },
+      },
+      projectMembers: {
+        where: {
+          status: 'ACTIVE',
+        },
+        select: {
+          userId: true,
+          projectId: true,
+          status: true,
+          requirement: {
+            select: { role: true },
           },
         },
       },
@@ -48,7 +75,7 @@ const DashboardPage = async () => {
     project.projectMembers.some((user) => user.userId === userId)
   );
 
-  const userName = session.user?.name?.split(' ')[0];
+  const userName = session.user?.name?.split(' ')[0] ?? 'User';
 
   return (
     <div className={'flex flex-col gap-8 md:gap-12'}>
