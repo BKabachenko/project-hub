@@ -1,7 +1,5 @@
 'use client';
 
-import { useTransition } from 'react';
-
 import Image from 'next/image';
 
 import { FileUser } from 'lucide-react';
@@ -9,27 +7,20 @@ import { FileUser } from 'lucide-react';
 import type { ProjectMemberWithUser } from '../types';
 
 import { Button } from '@/components/ui/button';
-import approveUserAction from '@/features/dashboard/approveUserAction';
 import { memberRoleLabels } from '@/lib/constants';
 import { timeAgo } from '@/lib/utils';
 
+import type { HandleResolveApplicationFn } from './OwnerApplicantsList';
+
 interface OwnerProjectApplicantBlockProps {
   applicant: ProjectMemberWithUser;
+  handleResolveApplication: HandleResolveApplicationFn;
 }
 
-const OwnerProjectApplicantBlock = ({ applicant }: OwnerProjectApplicantBlockProps) => {
-  const [isPending, startTransition] = useTransition();
-
-  const handleApprove = () => {
-    startTransition(async () => {
-      await approveUserAction({
-        projectId: applicant.projectId,
-        memberId: applicant.userId,
-        role: applicant.role,
-      });
-    });
-  };
-
+const OwnerProjectApplicantBlock = ({
+  applicant,
+  handleResolveApplication,
+}: OwnerProjectApplicantBlockProps) => {
   return (
     <div className='flex flex-row items-center justify-between gap-4 align-middle'>
       <div className={'flex flex-row items-center gap-2'}>
@@ -48,21 +39,29 @@ const OwnerProjectApplicantBlock = ({ applicant }: OwnerProjectApplicantBlockPro
         <div className='flex flex-col'>
           <p className={'text-sm font-bold'}>{applicant.user.name}</p>
           <p className={'flex flex-row flex-wrap gap-1 text-[10px] font-bold'}>
-            {memberRoleLabels[applicant.role]}
+            {memberRoleLabels[applicant.requirement.role]}
             <span className={'text-muted-foreground text-[10px] font-normal'}>
-              • {timeAgo(applicant.joinedAt)}
+              • {timeAgo(applicant.createdAt)}
             </span>
           </p>
         </div>
       </div>
       <div className='flex flex-col gap-2 sm:flex-row'>
         <Button variant={'outline'} size={'sm'}>
-          DEATILS
+          DETAILS
         </Button>
-        <Button variant={'default'} size={'sm'} onClick={handleApprove}>
+        <Button
+          variant={'default'}
+          size={'sm'}
+          onClick={() => handleResolveApplication('approve', applicant.id)}
+        >
           APPROVE
         </Button>
-        <Button variant={'outline'} size={'sm'}>
+        <Button
+          variant={'outline'}
+          size={'sm'}
+          onClick={() => handleResolveApplication('decline', applicant.id)}
+        >
           DECLINE
         </Button>
       </div>
