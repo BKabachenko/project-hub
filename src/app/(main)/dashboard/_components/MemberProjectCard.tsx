@@ -28,8 +28,8 @@ const MemberProjectCard = async ({ project }: MemberProjectCardProps) => {
       <CardContent className={'grid grid-cols-[1fr_70px] items-end justify-between gap-4'}>
         <div className={'flex flex-row flex-wrap gap-2'}>
           {userRoles.map((project) => (
-            <Badge key={project.role} variant={'role'} className={'col-start-1'}>
-              {memberRoleLabels[project.role]}
+            <Badge key={project.requirement.role} variant={'role'} className={'col-start-1'}>
+              {memberRoleLabels[project.requirement.role]}
             </Badge>
           ))}
         </div>
