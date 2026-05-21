@@ -1,27 +1,46 @@
 import type { Prisma } from '@/generated/prisma';
 
 export type ProjectWithDetails = Prisma.ProjectGetPayload<{
-  include: {
-    projectPositions: true;
-    projectMembers: {
-      where: {
-        status: {
-          in: ['APPROVED', 'PENDING'];
+  select: {
+    id: true;
+    title: true;
+    createdAt: true;
+    authorId: true;
+    projectPositions: {
+      select: {
+        requiredCount: true;
+        applications: {
+          include: {
+            user: {
+              select: { id: true; name: true; updatedAt: true; image: true };
+            };
+            requirement: {
+              select: { role: true; projectId: true; id: true };
+            };
+          };
         };
       };
-      include: {
-        user: {
-          select: { id: true; name: true; updatedAt: true; image: true };
+    };
+    projectMembers: {
+      select: {
+        userId: true;
+        projectId: true;
+        status: true;
+        requirement: {
+          select: { role: true };
         };
       };
     };
   };
 }>;
 
-export type ProjectMemberWithUser = Prisma.ProjectMemberGetPayload<{
+export type ProjectMemberWithUser = Prisma.ApplicationGetPayload<{
   include: {
     user: {
       select: { id: true; name: true; updatedAt: true; image: true };
+    };
+    requirement: {
+      select: { role: true; projectId: true; id: true };
     };
   };
 }>;
