@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Link from 'next/link';
 
@@ -13,20 +13,21 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Separator } from '@/components/ui/separator';
 import { timeAgo } from '@/lib/utils';
 
-import OwnerProjectApplicantBlock from './OwnerProjectApplicantBlock';
+import OwnerApplicantsList from './OwnerApplicantsList';
 
 interface OwnerProjectCardProps {
   project: ProjectWithDetails;
 }
 
 const OwnerProjectCard = ({ project }: OwnerProjectCardProps) => {
-  const pendingApplicants = project.projectMembers.filter((member) => member.status === 'PENDING');
+  const pendingApplicants = project.projectPositions
+    .flatMap((project) => project.applications)
+    .filter((applicant) => applicant.status === 'PENDING');
   const numberOfApplicants = pendingApplicants.length;
+
   const [isOpen, setIsOpen] = useState(numberOfApplicants === 1);
 
-  const approvedApplicants = project.projectMembers.filter(
-    (member) => member.status === 'APPROVED'
-  );
+  const approvedApplicants = project.projectMembers.filter((member) => member.status === 'ACTIVE');
   const projectPositions = project.projectPositions.reduce((sum, position) => {
     return sum + position.requiredCount;
   }, 0);
@@ -58,14 +59,12 @@ const OwnerProjectCard = ({ project }: OwnerProjectCardProps) => {
             <ChevronDown />
           </Button>
         </div>
-        {isOpen && (
+        {isOpen && numberOfApplicants > 0 && (
           <div className=''>
             <Separator className={'my-4'} />
             <div className='flex flex-col gap-2'>
               <h4 className={'text-muted-foreground text-[10px] font-bold'}>PENDING REVIEW</h4>
-              {pendingApplicants.map((applicant) => (
-                <OwnerProjectApplicantBlock key={applicant.userId} applicant={applicant} />
-              ))}
+              <OwnerApplicantsList applicants={pendingApplicants} />
             </div>
           </div>
         )}
