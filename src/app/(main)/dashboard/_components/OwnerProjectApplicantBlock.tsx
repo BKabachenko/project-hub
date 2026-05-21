@@ -27,7 +27,8 @@ const OwnerProjectApplicantBlock = ({
         <div className='relative flex h-10 w-10 items-center justify-center overflow-hidden'>
           {applicant.user.image ? (
             <Image
-              fill
+              width={40}
+              height={40}
               src={applicant.user.image}
               alt='User avatar'
               className={'rounded-xl bg-transparent'}
