@@ -6,7 +6,7 @@ export type ProjectWithDetails = Prisma.ProjectGetPayload<{
     title: true;
     createdAt: true;
     authorId: true;
-    projectPositions: {
+    requirements: {
       select: {
         requiredCount: true;
         applications: {

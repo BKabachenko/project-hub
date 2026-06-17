@@ -13,7 +13,7 @@ export default async function Home() {
       createdAt: 'desc',
     },
     include: {
-      projectPositions: true,
+      requirements: true,
     },
   });
 

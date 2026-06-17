@@ -55,7 +55,7 @@ const resolveApplicationAction = async ({
           select: {
             authorId: true,
             status: true,
-            projectPositions: {
+            requirements: {
               where: {
                 id: vData.data.requirementId,
               },
@@ -93,16 +93,16 @@ const resolveApplicationAction = async ({
           throw new Error('Project does not active.');
         }
 
-        if (project.projectPositions.length !== 1) {
+        if (project.requirements.length !== 1) {
           throw new Error('Application not found.');
         }
 
-        if (project.projectPositions[0]?.applications[0]?.status !== 'PENDING') {
+        if (project.requirements[0]?.applications[0]?.status !== 'PENDING') {
           throw new Error('User dont have pending application.');
         }
 
         if (vData.data.action === 'approve') {
-          if (project.projectPositions[0].requiredCount <= project.projectMembers.length) {
+          if (project.requirements[0].requiredCount <= project.projectMembers.length) {
             throw new Error('Dont enought empty slots in this position.');
           }
 
@@ -144,6 +144,13 @@ const resolveApplicationAction = async ({
             },
           });
 
+          await tx.projectRequirement.update({
+            where: { id: vData.data.requirementId },
+            data: {
+              openPositionsCount: { decrement: 1 },
+            },
+          });
+
           return { success: true, message: 'User successfully approved!' };
         }
 
@@ -180,6 +187,7 @@ const resolveApplicationAction = async ({
     }
 
     if (error instanceof Error) {
+      console.log(error);
       return { success: false, message: 'Error.' };
     }
     return { success: false, message: 'Unknown error.' };
