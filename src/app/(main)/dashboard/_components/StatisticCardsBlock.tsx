@@ -18,7 +18,7 @@ const StatisticCardsBlock = async ({ projects }: StatisticCardsBlockProps) => {
   const userProjects = projects.filter((project) => project.authorId === userId);
 
   const totalPending = userProjects
-    .flatMap((project) => project.projectPositions)
+    .flatMap((project) => project.requirements)
     .flatMap((project) => project.applications)
     .filter((project) => project.status === 'PENDING').length;
 

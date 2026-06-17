@@ -31,7 +31,7 @@ const DashboardPage = async () => {
       title: true,
       createdAt: true,
       authorId: true,
-      projectPositions: {
+      requirements: {
         where: {
           project: {
             authorId: session.user?.id,

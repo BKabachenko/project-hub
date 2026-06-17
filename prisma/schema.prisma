@@ -49,7 +49,7 @@ model Project {
   projectMembers   ProjectMember[]
   projectReviews   ProjectReview[]
   membersReviews   UserReview[]
-  projectPositions ProjectRequirement[]
+  requirements     ProjectRequirement[]
   milestones       Milestone[]
 }
 
