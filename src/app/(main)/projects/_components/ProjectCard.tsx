@@ -38,7 +38,7 @@ const ProjectCard = ({ project }: { project: ProjectWithPositions }) => {
         <p className={'line-clamp-3'}>{project.description}</p>
         <div className='flex flex-row flex-wrap items-center justify-between gap-4'>
           <div className={'flex flex-row flex-wrap gap-2'}>
-            {project.projectPositions.map((position) => (
+            {project.requirements.map((position) => (
               <Badge key={position.role} variant={'role'}>
                 {memberRoleLabels[position.role]}
               </Badge>

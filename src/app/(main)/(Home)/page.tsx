@@ -26,7 +26,7 @@ export default async function Home({ searchParams }: HomePageProps) {
       createdAt: 'desc',
     },
     include: {
-      projectPositions: true,
+      requirements: true,
     },
   });
 

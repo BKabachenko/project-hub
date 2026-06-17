@@ -20,7 +20,7 @@ interface OwnerProjectCardProps {
 }
 
 const OwnerProjectCard = ({ project }: OwnerProjectCardProps) => {
-  const pendingApplicants = project.projectPositions
+  const pendingApplicants = project.requirements
     .flatMap((project) => project.applications)
     .filter((applicant) => applicant.status === 'PENDING');
   const numberOfApplicants = pendingApplicants.length;
@@ -28,7 +28,7 @@ const OwnerProjectCard = ({ project }: OwnerProjectCardProps) => {
   const [isOpen, setIsOpen] = useState(numberOfApplicants === 1);
 
   const approvedApplicants = project.projectMembers.filter((member) => member.status === 'ACTIVE');
-  const projectPositions = project.projectPositions.reduce((sum, position) => {
+  const projectPositions = project.requirements.reduce((sum, position) => {
     return sum + position.requiredCount;
   }, 0);
 
