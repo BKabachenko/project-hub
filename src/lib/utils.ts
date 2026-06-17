@@ -1,14 +1,14 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export function timeAgo(dateString: Date) {
   const date: Date = new Date(dateString);
   const now: Date = new Date();
-  const diffInSeconds = Math.round((date.getTime() - now.getTime()) / 1000); 
+  const diffInSeconds = Math.round((date.getTime() - now.getTime()) / 1000);
 
   const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
 
@@ -18,13 +18,24 @@ export function timeAgo(dateString: Date) {
     { limit: 86400, unit: 'hour' },
     { limit: 2592000, unit: 'day' },
     { limit: 31536000, unit: 'month' },
-    { limit: Infinity, unit: 'year' }
+    { limit: Infinity, unit: 'year' },
   ];
 
   for (const interval of intervals) {
     if (Math.abs(diffInSeconds) < interval.limit) {
-      const val = Math.round(diffInSeconds / (interval.limit === 60 ? 1 : intervals[intervals.indexOf(interval) - 1].limit));
+      const val = Math.round(
+        diffInSeconds /
+          (interval.limit === 60 ? 1 : intervals[intervals.indexOf(interval) - 1].limit)
+      );
       return rtf.format(val, interval.unit);
     }
   }
 }
+
+export const debounce = <Args extends unknown[]>(func: (...args: Args) => void, delay: number) => {
+  let timeout: ReturnType<typeof setTimeout>;
+  return function (...args: Args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), delay);
+  };
+};

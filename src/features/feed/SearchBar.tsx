@@ -5,20 +5,13 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { SearchIcon } from 'lucide-react';
 
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
-
-export const debounce = <Args extends unknown[]>(func: (...args: Args) => void, delay: number) => {
-  let timeout: ReturnType<typeof setTimeout>;
-  return function (...args: Args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), delay);
-  };
-};
+import { debounce } from '@/lib/utils';
 
 const SearchBar = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
+  
   const defaultParam = searchParams.get('query')?.toString() || '';
 
   const handleSearch = (term: string) => {
