@@ -6,21 +6,22 @@ import { SearchIcon } from 'lucide-react';
 
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import { debounce } from '@/lib/utils';
+import { SEARCH_KEY } from './constants';
 
 const SearchBar = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   
-  const defaultParam = searchParams.get('query')?.toString() || '';
+  const defaultParam = searchParams.get(SEARCH_KEY)?.toString() || '';
 
   const handleSearch = (term: string) => {
     const params = new URLSearchParams(searchParams);
 
     if (term) {
-      params.set('query', term);
+      params.set(SEARCH_KEY, term);
     } else {
-      params.delete('query');
+      params.delete(SEARCH_KEY);
     }
     router.replace(`${pathname}?${params.toString()}`);
   };
