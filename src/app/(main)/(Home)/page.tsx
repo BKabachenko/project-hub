@@ -1,34 +1,20 @@
 import ProjectCard from '@/app/(main)/projects/_components/ProjectCard';
 import SearchBar from '@/features/feed/SearchBar';
-import prisma from '@/lib/prisma';
+import { getProjects } from '@/features/feed/api/getProjects';
+import type { resolvedParamsType } from '@/features/feed/types';
 
 import FilterBadge from './_components/FilterBadge';
 import FilterBlock from './_components/FilterBlock';
 import FilterSheet from './_components/FilterSheet';
 
 interface HomePageProps {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams: Promise<resolvedParamsType>;
 }
 
 export default async function Home({ searchParams }: HomePageProps) {
   const resolvedParams = await searchParams;
-  const searchQuery = typeof resolvedParams.query === 'string' ? resolvedParams.query : '';
 
-  const newTenProjects = await prisma.project.findMany({
-    where: {
-      OR: [
-        { title: { contains: searchQuery, mode: 'insensitive' } },
-        { description: { contains: searchQuery, mode: 'insensitive' } },
-      ],
-    },
-    take: 10,
-    orderBy: {
-      createdAt: 'desc',
-    },
-    include: {
-      requirements: true,
-    },
-  });
+  const projects = await getProjects(resolvedParams);
 
   return (
     <>
@@ -47,7 +33,7 @@ export default async function Home({ searchParams }: HomePageProps) {
             <FilterBadge label={'Lorem im'} />
           </div>
           <div className='flex flex-col gap-y-10'>
-            {newTenProjects.map((project) => (
+            {projects.map((project) => (
               <ProjectCard key={project.id} project={project} />
             ))}
           </div>
