@@ -39,3 +39,8 @@ export const debounce = <Args extends unknown[]>(func: (...args: Args) => void, 
     timeout = setTimeout(() => func(...args), delay);
   };
 };
+
+export const toArray = <T>(value: T | T[] | undefined): T[] => {
+  if (!value) return [];
+  return Array.isArray(value) ? [...value] : [value];
+};
