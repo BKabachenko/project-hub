@@ -1,35 +1,11 @@
-import z from 'zod';
-
 import type { resolvedParamsType } from '../types';
 
-import { MemberRole, ProjectStatus, ProjectType } from '@/generated/prisma';
 import prisma from '@/lib/prisma';
 
-export const toArray = <T>(value: T | T[] | undefined): T[] => {
-  if (!value) return [];
-  return Array.isArray(value) ? [...value] : [value];
-};
-
-const urlParamToArray = <T extends z.ZodType>(schema: T) =>
-  z
-    .union([z.string(), z.array(z.string()), z.undefined()])
-    .optional()
-    .catch(undefined)
-    .transform((val) => toArray(val) as z.input<T>[] | undefined)
-    .pipe(z.array(schema).min(1).optional().catch(undefined));
-
-export const filterParamsSchema = z.object({
-  query: z.union([z.string(), z.undefined()]).optional().catch(undefined),
-  role: urlParamToArray(z.enum(MemberRole)),
-  category: urlParamToArray(z.enum(ProjectType)),
-  status: urlParamToArray(z.enum(ProjectStatus)),
-});
-
-export type FilterParams = z.infer<typeof filterParamsSchema>;
+import { filterParamsSchema } from '../schema';
 
 export const getProjects = async (resolvedParams: resolvedParamsType) => {
   const safeParams = filterParamsSchema.safeParse(resolvedParams);
-  console.log(safeParams)
   if (!safeParams.success) {
     return [];
   }
