@@ -7,15 +7,12 @@ import type { FilterKey } from '../types';
 
 import { FILTER_KEYS } from '@/features/feed/constants';
 
+import { getFiltersFromParams, replaceUrlFromParams } from '../utils/urlParams';
+
 type useProjectFilters = (searchParams: ReadonlyURLSearchParams) => {
   activeFilters: Record<FilterKey, string[]>;
   handleToggleChange: (type: FilterKey, id: string, isChecked: boolean) => void;
   handleClearAll: () => void;
-};
-
-const getFiltersFromParams = (params: URLSearchParams) => {
-  const entries = FILTER_KEYS.map((cat) => [cat, params.getAll(cat)]);
-  return Object.fromEntries(entries) as Record<FilterKey, string[]>;
 };
 
 export const useProjectFilters: useProjectFilters = (searchParams) => {
@@ -51,15 +48,7 @@ export const useProjectFilters: useProjectFilters = (searchParams) => {
 
     setActiveFilters(localParams.current);
 
-    const params = new URLSearchParams(searchParams.toString());
-    FILTER_KEYS.forEach((key) => params.delete(key));
-    Object.entries(localParams.current).forEach(([key, values]) => {
-      values.forEach((value) => {
-        params.append(key, value);
-      });
-    });
-
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    replaceUrlFromParams(router, pathname, searchParams, localParams.current);
   };
 
   const handleClearAll = () => {
