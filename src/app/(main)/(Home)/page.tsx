@@ -3,7 +3,7 @@ import SearchBar from '@/features/feed/SearchBar';
 import { getProjects } from '@/features/feed/api/getProjects';
 import type { resolvedParamsType } from '@/features/feed/types';
 
-import FilterBadge from './_components/FilterBadge';
+import FilterBadgeBlock from './_components/FilterBadgeBlock';
 import FilterBlock from './_components/FilterBlock';
 import FilterSheet from './_components/FilterSheet';
 
@@ -27,10 +27,7 @@ export default async function Home({ searchParams }: HomePageProps) {
             </div>
           </div>
           <div className='flex flex-row flex-wrap gap-2'>
-            <span className={'text-sm font-light'}>Showing:</span>
-            <FilterBadge label={'Lorem impum'} />
-            <FilterBadge label={'Lorem'} />
-            <FilterBadge label={'Lorem im'} />
+            <FilterBadgeBlock searchParams={resolvedParams}/>
           </div>
           <div className='flex flex-col gap-y-10'>
             {projects.map((project) => (
