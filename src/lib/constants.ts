@@ -18,13 +18,13 @@ export const initialState: ActionState = {
   success: false,
 };
 
-export const userStatusLabels: Record<UserStatus, string> = {
+export const userStatusLabels = {
   [UserStatus.ACTIVE]: 'Active',
   [UserStatus.DELETED]: 'Deleted',
   [UserStatus.BANNED]: 'Banned',
-};
+} as const satisfies Record<UserStatus, string>;
 
-export const memberRoleLabels: Record<MemberRole, string> = {
+export const memberRoleLabels = {
   [MemberRole.FRONTEND_DEVELOPER]: 'Frontend Developer',
   [MemberRole.BACKEND_DEVELOPER]: 'Backend Developer',
   [MemberRole.FULLSTACK_DEVELOPER]: 'Fullstack Developer',
@@ -36,21 +36,15 @@ export const memberRoleLabels: Record<MemberRole, string> = {
   [MemberRole.DATA_SCIENTIST]: 'Data Scientist',
   [MemberRole.MARKETING_SPECIALIST]: 'Marketing Specialist',
   [MemberRole.OWNER]: 'Owner',
-};
+} as const satisfies Record<MemberRole, string>;
 
-export const projectStatusLabels: Record<ProjectStatus, string> = {
+export const projectStatusLabels = {
   [ProjectStatus.ACTIVE]: 'Active',
   [ProjectStatus.FINISHED]: 'Finished',
   [ProjectStatus.CLOSED]: 'Closed',
-};
+} as const satisfies Record<ProjectStatus, string>;
 
-export const projectMemberStatusLabels: Record<ProjectMemberStatus, string> = {
-  [ProjectMemberStatus.PENDING]: 'Pending',
-  [ProjectMemberStatus.APPROVED]: 'Approved',
-  [ProjectMemberStatus.DECLINED]: 'Declined',
-};
-
-export const projectCategoryLabels: Record<ProjectCategory, string> = {
+export const projectCategoryLabels = {
   [ProjectCategory.E_COMMERCE]: 'E-commerce',
   [ProjectCategory.EDUCATION]: 'Education',
   [ProjectCategory.HEALTHCARE]: 'Healthcare',
@@ -81,11 +75,11 @@ export const projectCategoryLabels: Record<ProjectCategory, string> = {
   [ProjectCategory.ANALYTICS]: 'Analytics',
   [ProjectCategory.CYBERSECURITY]: 'Cybersecurity',
   [ProjectCategory.AR_VR]: 'AR / VR',
-};
+} as const satisfies Record<ProjectCategory, string>;
 
-export const projectTypeLabels: Record<ProjectType, string> = {
+export const projectTypeLabels = {
   [ProjectType.PET_PROJECT]: 'Pet Project',
   [ProjectType.COMMERCIAL]: 'Commercial',
   [ProjectType.OPEN_SOURCE]: 'Open Source',
   [ProjectType.CHARITY]: 'Charity',
-};
+} as const satisfies Record<ProjectType, string>;
