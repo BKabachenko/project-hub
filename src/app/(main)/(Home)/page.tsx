@@ -26,7 +26,7 @@ export default async function Home({ searchParams }: HomePageProps) {
               <FilterSheet />
             </div>
           </div>
-          <div className='flex flex-row flex-wrap gap-2'>
+          <div className='flex flex-row flex-wrap gap-2 items-center'>
             <FilterBadgeBlock searchParams={resolvedParams}/>
           </div>
           <div className='flex flex-col gap-y-10'>
