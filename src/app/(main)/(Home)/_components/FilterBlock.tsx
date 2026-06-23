@@ -1,17 +1,37 @@
+'use client';
+
+import { useSearchParams } from 'next/navigation';
+
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-  FieldLegend,
-  FieldSeparator,
-  FieldSet,
-} from '@/components/ui/field';
+import { FieldGroup, FieldSeparator, FieldSet } from '@/components/ui/field';
+import { useProjectFilters } from '@/features/feed/hooks/useProjectFilters';
+import type { FilterOption } from '@/features/feed/types';
+import { memberRoleLabels, projectStatusLabels, projectTypeLabels } from '@/lib/constants';
+
+import FilterCheckboxGroup from './FilterCheckboxGroup';
+
+const projectTypes: FilterOption[] = Object.entries(projectTypeLabels).map(([key, value]) => ({
+  id: key,
+  value: value,
+}));
+
+const projectStatuses: FilterOption[] = Object.entries(projectStatusLabels).map(([key, value]) => ({
+  id: key,
+  value: value,
+}));
+
+const projectRoles: FilterOption[] = Object.entries(memberRoleLabels)
+  .map(([key, value]) => ({
+    id: key,
+    value: value,
+  }))
+  .filter((i) => i.id !== 'OWNER');
 
 const FilterBlock = () => {
-  const labelStyles = 'font-regular text-muted-foreground';
+  const searchParams = useSearchParams();
+
+  const { activeFilters, handleToggleChange, handleClearAll } = useProjectFilters(searchParams);
+
   return (
     <div className='border-border min-w-66 rounded-md border bg-transparent p-4'>
       <FieldGroup>
@@ -21,78 +41,37 @@ const FilterBlock = () => {
             type={'button'}
             variant={'ghost'}
             className={'text-muted-foreground text-xs underline'}
+            onClick={handleClearAll}
           >
             Clear all
           </Button>
         </div>
         <FieldSet>
-          <FieldGroup className={'gap-3'}>
-            <FieldLegend variant={'label'} className={labelStyles}>
-              Project Type
-            </FieldLegend>
-            <Field orientation={'horizontal'}>
-              <Checkbox id={'charity'} />
-              <FieldLabel className={labelStyles} htmlFor={'charity'}>
-                Charity
-              </FieldLabel>
-            </Field>
-            <Field orientation={'horizontal'}>
-              <Checkbox id={'pet'} />
-              <FieldLabel className={labelStyles} htmlFor={'pet'}>
-                Pet Project
-              </FieldLabel>
-            </Field>
-            <Field orientation={'horizontal'}>
-              <Checkbox id={'commercial'} />
-              <FieldLabel className={labelStyles} htmlFor={'commercial'}>
-                Commercial
-              </FieldLabel>
-            </Field>
-            <Field orientation={'horizontal'}>
-              <Checkbox id={'opensource'} />
-              <FieldLabel className={labelStyles} htmlFor={'opensource'}>
-                Open Source
-              </FieldLabel>
-            </Field>
-          </FieldGroup>
+          <FilterCheckboxGroup
+            title={'Project Type'}
+            filterKey={'category'}
+            options={projectTypes}
+            checkedState={activeFilters['category']}
+            onChange={handleToggleChange}
+          />
 
           <FieldSeparator />
+          <FilterCheckboxGroup
+            title={'Project status'}
+            filterKey={'status'}
+            options={projectStatuses}
+            checkedState={activeFilters['status']}
+            onChange={handleToggleChange}
+          />
 
-          <FieldGroup className={'gap-3'}>
-            <FieldLegend variant={'label'} className={labelStyles}>
-              Roles Needed
-            </FieldLegend>
-            <Field orientation={'horizontal'}>
-              <Checkbox id={'1'} />
-              <FieldLabel className={labelStyles} htmlFor={'1'}>
-                Test 1
-              </FieldLabel>
-            </Field>
-            <Field orientation={'horizontal'}>
-              <Checkbox id={'2'} />
-              <FieldLabel className={labelStyles} htmlFor={'2'}>
-                Test 2
-              </FieldLabel>
-            </Field>
-            <Field orientation={'horizontal'}>
-              <Checkbox id={'3'} />
-              <FieldLabel className={labelStyles} htmlFor={'3'}>
-                Test 3
-              </FieldLabel>
-            </Field>
-            <Field orientation={'horizontal'}>
-              <Checkbox id={'4'} />
-              <FieldLabel className={labelStyles} htmlFor={'4'}>
-                Test 4
-              </FieldLabel>
-            </Field>
-            <Field orientation={'horizontal'}>
-              <Checkbox id={'5'} />
-              <FieldLabel className={labelStyles} htmlFor={'5'}>
-                Test 5
-              </FieldLabel>
-            </Field>
-          </FieldGroup>
+          <FieldSeparator />
+          <FilterCheckboxGroup
+            title={'Roles Needed'}
+            filterKey={'role'}
+            options={projectRoles}
+            checkedState={activeFilters['role']}
+            onChange={handleToggleChange}
+          />
         </FieldSet>
       </FieldGroup>
     </div>
