@@ -9,7 +9,7 @@ import type { ProjectMemberWithUser } from '../types';
 
 import resolveApplicationAction, {
   type ResolveApplicationProps,
-} from '@/features/dashboard/resolveApplicationAction';
+} from '@/features/dashboard/actions/resolveApplicationAction';
 
 import OwnerProjectApplicantBlock from './OwnerProjectApplicantBlock';
 
