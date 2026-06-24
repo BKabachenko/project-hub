@@ -1,4 +1,4 @@
-import type { FilterKey } from '../types';
+import type { FilterKey } from './types';
 
 import { memberRoleLabels, projectStatusLabels, projectTypeLabels } from '@/lib/constants';
 

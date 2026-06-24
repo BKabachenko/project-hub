@@ -13,8 +13,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/sha
 import { Separator } from '@/shared/components/ui/separator';
 import prisma from '@/lib/prisma';
 
-import ProjectStatusBadge from '../../../../shared/components/domain/ProjectStatusBadge';
-import ProjectTypeBadge from '../../../../shared/components/domain/ProjectTypeBadge';
+import ProjectStatusBadge from '@/shared/components/domain/ProjectStatusBadge';
+import ProjectTypeBadge from '@/shared/components/domain/ProjectTypeBadge';
 
 const getProject = cache(async (projectId: string) => {
   return await prisma.project.findUnique({
