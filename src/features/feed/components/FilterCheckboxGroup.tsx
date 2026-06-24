@@ -1,6 +1,6 @@
 'use client';
 
-import { Field, FieldGroup, FieldLegend } from '@/components/ui/field';
+import { Field, FieldGroup, FieldLegend } from '@/shared/components/ui/field';
 
 import type { FilterKey, FilterOption } from '@/features/feed/types';
 import FilterCheckbox from './FilterCheckbox';

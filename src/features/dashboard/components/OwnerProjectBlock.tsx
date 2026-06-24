@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 import type { ProjectWithDetails } from '../types';
 
-import { Card } from '@/components/ui/card';
+import { Card } from '@/shared/components/ui/card';
 
 import OwnerProjectCard from './OwnerProjectCard';
 

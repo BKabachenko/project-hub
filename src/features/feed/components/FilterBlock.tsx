@@ -2,8 +2,8 @@
 
 import { useSearchParams } from 'next/navigation';
 
-import { Button } from '@/components/ui/button';
-import { FieldGroup, FieldSeparator, FieldSet } from '@/components/ui/field';
+import { Button } from '@/shared/components/ui/button';
+import { FieldGroup, FieldSeparator, FieldSet } from '@/shared/components/ui/field';
 import { useProjectFilters } from '@/features/feed/hooks/useProjectFilters';
 import type { FilterOption } from '@/features/feed/types';
 import { memberRoleLabels, projectStatusLabels, projectTypeLabels } from '@/lib/constants';

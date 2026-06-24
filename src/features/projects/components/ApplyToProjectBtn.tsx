@@ -1,7 +1,7 @@
 'use client';
 import { useActionState } from 'react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/shared/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -9,7 +9,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@/shared/components/ui/select';
 import { applyToProjectAction } from '../actions/applyToProjectAction';
 import { initialState } from '@/lib/constants';
 

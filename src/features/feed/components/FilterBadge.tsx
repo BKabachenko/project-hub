@@ -6,8 +6,8 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { XIcon } from 'lucide-react';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge } from '@/shared/components/ui/badge';
+import { Button } from '@/shared/components/ui/button';
 import type { FILTER_LABEL_MAP } from '@/features/feed/constants';
 import { getFiltersFromParams, replaceUrlFromParams } from '@/features/feed/utils/urlParams';
 import { cn } from '@/lib/utils';

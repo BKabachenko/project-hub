@@ -6,7 +6,7 @@ import { FileUser } from 'lucide-react';
 
 import type { ProjectMemberWithUser } from '../types';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/shared/components/ui/button';
 import { memberRoleLabels } from '@/lib/constants';
 import { timeAgo } from '@/lib/utils';
 

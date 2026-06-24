@@ -2,7 +2,7 @@ import { FILTER_KEYS, FILTER_LABEL_MAP } from '@/features/feed/constants';
 import type { resolvedParamsType } from '@/features/feed/types';
 import { toArray } from '@/lib/utils';
 
-import FilterBadge from '../_components/FilterBadge';
+import FilterBadge from './FilterBadge';
 
 interface FilterBadgeBlockProps {
   searchParams: resolvedParamsType;

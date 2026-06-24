@@ -1,8 +1,8 @@
 import Link from 'next/link';
 
-import type { ProjectWithPositions } from '../types';
+import type { ProjectWithPositions } from '@/shared/types';
 
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/shared/components/ui/badge';
 import {
   Card,
   CardAction,
@@ -10,11 +10,11 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@/shared/components/ui/card';
 import { memberRoleLabels } from '@/lib/constants';
 
-import ProjectStatusBadge from './ProjectStatusBadge';
-import ProjectTypeBadge from './ProjectTypeBadge';
+import ProjectStatusBadge from '@/shared/components/domain/ProjectStatusBadge';
+import ProjectTypeBadge from '@/shared/components/domain/ProjectTypeBadge';
 
 const ProjectCard = ({ project }: { project: ProjectWithPositions }) => {
   return (

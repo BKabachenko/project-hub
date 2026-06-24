@@ -4,9 +4,9 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { SearchIcon } from 'lucide-react';
 
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/shared/components/ui/input-group';
 import { debounce } from '@/lib/utils';
-import { SEARCH_KEY } from './constants';
+import { SEARCH_KEY } from '../constants';
 
 const SearchBar = () => {
   const router = useRouter();

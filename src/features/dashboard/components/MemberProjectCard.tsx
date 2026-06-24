@@ -3,8 +3,8 @@ import Link from 'next/link';
 import type { ProjectWithDetails } from '../types';
 
 import { auth } from '@/auth';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/shared/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 import { memberRoleLabels } from '@/lib/constants';
 
 interface MemberProjectCardProps {

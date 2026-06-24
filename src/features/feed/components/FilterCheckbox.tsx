@@ -1,7 +1,7 @@
 'use client';
 
-import { Checkbox } from '@/components/ui/checkbox';
-import { FieldLabel } from '@/components/ui/field';
+import { Checkbox } from '@/shared/components/ui/checkbox';
+import { FieldLabel } from '@/shared/components/ui/field';
 
 interface FilterCheckboxProps {
   id: string;

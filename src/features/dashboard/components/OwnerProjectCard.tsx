@@ -8,9 +8,9 @@ import { ChevronDown, FileUser } from 'lucide-react';
 
 import type { ProjectWithDetails } from '../types';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
+import { Button } from '@/shared/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/ui/card';
+import { Separator } from '@/shared/components/ui/separator';
 import { timeAgo } from '@/lib/utils';
 
 import OwnerApplicantsList from './OwnerApplicantsList';

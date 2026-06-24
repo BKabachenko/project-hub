@@ -1,6 +1,6 @@
 import { SlidersHorizontal } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/shared/components/ui/button';
 import {
   Sheet,
   SheetClose,
@@ -10,7 +10,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet';
+} from '@/shared/components/ui/sheet';
 
 import FilterBlock from './FilterBlock';
 

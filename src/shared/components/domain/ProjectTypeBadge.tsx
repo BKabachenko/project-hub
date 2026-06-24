@@ -1,4 +1,4 @@
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/shared/components/ui/badge';
 import { ProjectType } from '@/generated/prisma';
 import { projectTypeLabels } from '@/lib/constants';
 import { cn } from '@/lib/utils';
