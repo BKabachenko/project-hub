@@ -1,9 +1,6 @@
 import { auth } from '@/auth';
+import { MemberProjectsBlock, OwnerProjectBlock, StatisticCardsBlock } from '@/features/dashboard';
 import prisma from '@/lib/prisma';
-
-import MemberProjectsBlock from './_components/MemberProjectsBlock';
-import OwnerProjectBlock from './_components/OwnerProjectBlock';
-import StatisticCardsBlock from './_components/StatisticCardsBlock';
 
 const DashboardPage = async () => {
   const session = await auth();

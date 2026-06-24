@@ -1,11 +1,12 @@
-import ProjectCard from '@/app/(main)/projects/_components/ProjectCard';
-import SearchBar from '@/features/feed/SearchBar';
-import { getProjects } from '@/features/feed/api/getProjects';
-import type { resolvedParamsType } from '@/features/feed/types';
-
-import FilterBadgeBlock from './_components/FilterBadgeBlock';
-import FilterBlock from './_components/FilterBlock';
-import FilterSheet from './_components/FilterSheet';
+import type { resolvedParamsType } from '@/features/feed';
+import {
+  FilterBadgeBlock,
+  FilterBlock,
+  FilterSheet,
+  ProjectCard,
+  SearchBar,
+  getProjects,
+} from '@/features/feed';
 
 interface HomePageProps {
   searchParams: Promise<resolvedParamsType>;
@@ -26,8 +27,8 @@ export default async function Home({ searchParams }: HomePageProps) {
               <FilterSheet />
             </div>
           </div>
-          <div className='flex flex-row flex-wrap gap-2 items-center'>
-            <FilterBadgeBlock searchParams={resolvedParams}/>
+          <div className='flex flex-row flex-wrap items-center gap-2'>
+            <FilterBadgeBlock searchParams={resolvedParams} />
           </div>
           <div className='flex flex-col gap-y-10'>
             {projects.map((project) => (

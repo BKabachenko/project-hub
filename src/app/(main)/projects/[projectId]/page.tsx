@@ -7,14 +7,14 @@ import { notFound } from 'next/navigation';
 
 import { Calendar, Link as LinkIcon } from 'lucide-react';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/shared/components/ui/badge';
+import { Button } from '@/shared/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/ui/card';
+import { Separator } from '@/shared/components/ui/separator';
 import prisma from '@/lib/prisma';
 
-import ProjectStatusBadge from '../_components/ProjectStatusBadge';
-import ProjectTypeBadge from '../_components/ProjectTypeBadge';
+import ProjectStatusBadge from '@/shared/components/domain/ProjectStatusBadge';
+import ProjectTypeBadge from '@/shared/components/domain/ProjectTypeBadge';
 
 const getProject = cache(async (projectId: string) => {
   return await prisma.project.findUnique({
