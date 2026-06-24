@@ -2,7 +2,7 @@
 
 import { useActionState } from 'react';
 
-import { createProjectAction } from './actions';
+import { createProjectAction } from '../actions/createProjectAction';
 import { initialState } from '@/lib/constants';
 
 const CreateProjectForm = () => {

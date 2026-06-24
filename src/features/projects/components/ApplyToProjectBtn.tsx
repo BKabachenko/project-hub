@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { applyToProjectAction } from '@/features/projects/applyToProjectAction';
+import { applyToProjectAction } from '../actions/applyToProjectAction';
 import { initialState } from '@/lib/constants';
 
 const ApplyToProjectForm = ({ projectId }: { projectId: string }) => {

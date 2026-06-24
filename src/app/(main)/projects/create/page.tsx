@@ -1,4 +1,4 @@
-import CreateProjectForm from '@/features/projects/CreateProjectForm';
+import { CreateProjectForm } from '@/features/projects';
 
 const CreateProjectPage = () => {
   return (

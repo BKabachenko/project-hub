@@ -1,4 +1,4 @@
-import ProjectCard from '@/app/(main)/projects/_components/ProjectCard';
+import ProjectCard from '@/features/projects/components/ProjectCard';
 import SearchBar from '@/features/feed/SearchBar';
 import { getProjects } from '@/features/feed/api/getProjects';
 import type { resolvedParamsType } from '@/features/feed/types';
