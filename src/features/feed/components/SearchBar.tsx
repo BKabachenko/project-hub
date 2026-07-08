@@ -29,7 +29,7 @@ const SearchBar = () => {
   const debouncedHandleSearch = debounce(handleSearch, 300);
 
   return (
-    <InputGroup className={'bg-input border-border p-6 shadow-md'}>
+    <InputGroup className={'bg-card border-border p-6 shadow-md'}>
       <InputGroupInput
         id='inline-start-input'
         placeholder='Search...'
