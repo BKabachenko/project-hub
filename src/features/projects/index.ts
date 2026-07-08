@@ -1,2 +1,1 @@
-export {default as CreateProjectForm} from "./components/CreateProjectForm";
-
+export { CreateProjectForm } from './CreateProjectForm';
