@@ -72,7 +72,7 @@ export async function createProjectAction(
         id: true,
       },
     });
-    revalidatePath(`/projects`);
+    revalidatePath(`/feed`);
     return { success: true, message: 'Project created!', data: { newProjectId: result.id } };
   } catch (err) {
     console.error('[CREATE_PROJECT_ERROR]:', err);
