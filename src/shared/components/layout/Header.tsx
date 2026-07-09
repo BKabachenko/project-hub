@@ -6,13 +6,14 @@ import { auth, signIn, signOut } from '@/auth';
 
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Button } from '../ui/button';
+import ThemeSwitcher from '../ui/ThemeSwitcher';
 
 const Header = async () => {
   const session = await auth();
 
   return (
     <header className='mb-10'>
-      <div className='bg-card border-border mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center rounded-lg border px-8 py-5'>
+      <div className='bg-card border-border mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto_auto] items-center rounded-lg border px-8 py-5'>
         <Link href={'/'}>
           <div className=''>Project Hub</div>
         </Link>
@@ -40,6 +41,9 @@ const Header = async () => {
             Menu
           </div>
         </nav>
+        <div className='mx-4'>
+          <ThemeSwitcher/>
+        </div>
         <div className=''>
           {session ? (
             <form

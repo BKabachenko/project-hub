@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Roboto } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "next-themes";
 
 const roboto = Roboto({subsets:['latin'],variable:'--font-sans'});
 
@@ -27,12 +28,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", roboto.variable)}>
+    <html lang="en" className={cn("font-sans", roboto.variable)} suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+      <ThemeProvider
+        attribute="class"
+        enableSystem
+        disableTransitionOnChange 
+        >
         {children}
         <Toaster position={"bottom-right"}/>
+      </ThemeProvider>
       </body>
     </html>
   );
