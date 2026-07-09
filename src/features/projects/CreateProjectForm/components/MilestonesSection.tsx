@@ -29,6 +29,8 @@ import {
 import { Separator } from '@/shared/components/ui/separator';
 import { Textarea } from '@/shared/components/ui/textarea';
 
+import { defaultMilestonesField } from '../constants';
+
 interface MilestonesSectionProps {
   control: Control<FormParams>;
 }
@@ -60,7 +62,7 @@ const MilestonesSection = ({ control }: MilestonesSectionProps) => {
               return (
                 <Card
                   key={item.id}
-                  className={'bg-muted/20 gap-4 rounded-md p-2 transition hover:shadow-md '}
+                  className={'bg-muted/20 gap-4 rounded-md p-2 transition hover:shadow-md'}
                   size={'sm'}
                 >
                   <CardHeader className={'flex flex-row items-center justify-between'}>
@@ -171,7 +173,7 @@ const MilestonesSection = ({ control }: MilestonesSectionProps) => {
                             id={field.name}
                             aria-invalid={fieldState.invalid}
                             placeholder={'Type description of milestone'}
-                            className={'min-h-15 min-w-1 wrap-anywhere resize-y'}
+                            className={'min-h-15 min-w-1 resize-y wrap-anywhere'}
                             {...field}
                           />
                           {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -192,15 +194,7 @@ const MilestonesSection = ({ control }: MilestonesSectionProps) => {
           className={'w-full p-5'}
           aria-label='Add one more card to milestones'
           onClick={() =>
-            milestonesFieldArray.append(
-              {
-                title: '',
-                description: '',
-                status: 'IN_PROGRESS',
-                order: 0,
-              },
-              { shouldFocus: false }
-            )
+            milestonesFieldArray.append(defaultMilestonesField, { shouldFocus: false })
           }
         >
           Add one more

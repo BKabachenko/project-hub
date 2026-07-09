@@ -13,25 +13,18 @@ import type { FormParams } from '../types';
 import { Button } from '@/shared/components/ui/button';
 
 import { createProjectAction } from '../action';
+import { defaultFormValues } from '../constants';
+import { formSchema } from '../schema';
+import { mapServerErrorsToRHF } from '../utils';
 
 import BasicInfoSection from './BasicInfoSection';
 import MilestonesSection from './MilestonesSection';
 import RequirementsSection from './RequirementsSection';
-import { formSchema } from '../schema';
-
-const mapServerErrorsToRHF = (
-  fieldErrors: Record<keyof FormParams, string[]>
-): FieldErrors<FormParams> => {
-  const newObject = Object.entries(fieldErrors).map(([key, value]) => [
-    key,
-    { message: value[0], type: 'custom' },
-  ]);
-  return Object.fromEntries(newObject) as FieldErrors<FormParams>;
-};
 
 const CreateProjectForm = () => {
   const router = useRouter();
-  const [newErrors, setNewErrors] = useState({});
+  const [newErrors, setNewErrors] = useState<FieldErrors<FormParams>>({});
+
   const {
     handleSubmit,
     reset,
@@ -40,20 +33,7 @@ const CreateProjectForm = () => {
   } = useForm<FormParams>({
     errors: newErrors,
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: '',
-      description: '',
-      gitUrl: '',
-      type: [],
-      milestones: [],
-      requirements: [
-        {
-          role: 'FRONTEND_DEVELOPER',
-          requiredCount: 1,
-          techStack: [],
-        },
-      ],
-    },
+    defaultValues: defaultFormValues,
   });
 
   const onSubmit = async (data: FormParams) => {

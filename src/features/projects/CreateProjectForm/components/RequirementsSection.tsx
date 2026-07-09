@@ -40,6 +40,8 @@ import {
   TagsInputList,
 } from '@/shared/components/ui/tags-input';
 
+import { defaultRequirementsField } from '../constants';
+
 interface RequirementsSectionProps {
   control: Control<FormParams>;
 }
@@ -194,14 +196,7 @@ const RequirementsSection = ({ control }: RequirementsSectionProps) => {
           className={'w-full p-5'}
           aria-label='Add one more card to requirements'
           onClick={() =>
-            requirementsFieldArray.append(
-              {
-                role: 'FRONTEND_DEVELOPER',
-                requiredCount: 1,
-                techStack: [],
-              },
-              { shouldFocus: false }
-            )
+            requirementsFieldArray.append(defaultRequirementsField, { shouldFocus: false })
           }
         >
           Add one more
