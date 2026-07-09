@@ -1,5 +1,6 @@
 import {
   MemberRole,
+  MilestoneStatus,
   ProjectCategory,
   ProjectMemberStatus,
   ProjectStatus,
@@ -7,12 +8,14 @@ import {
   UserStatus,
 } from '@/generated/prisma';
 
-export type ActionState = {
-  success: boolean;
-  message?: string;
-  error?: string;
-  fieldErrors?: Record<string, string[]>;
-};
+export type ActionState<TData = undefined> =
+  | { success: true; message?: string, data?: TData}
+  | {
+      success: false;
+      message?: string;
+      error?: string;
+      fieldErrors?: Record<string, string[]>;
+    };
 
 export const initialState: ActionState = {
   success: false,
@@ -83,3 +86,10 @@ export const projectTypeLabels = {
   [ProjectType.OPEN_SOURCE]: 'Open Source',
   [ProjectType.CHARITY]: 'Charity',
 } as const satisfies Record<ProjectType, string>;
+
+export const milestonesStatusLabels = {
+  [MilestoneStatus.COMPLETED]: 'Completed',
+  [MilestoneStatus.IN_PROGRESS]: 'In progress',
+  [MilestoneStatus.CANCELLED]: 'Canceled',
+  [MilestoneStatus.PLANNED]: 'Planned',
+} as const satisfies Record<MilestoneStatus, string>;
