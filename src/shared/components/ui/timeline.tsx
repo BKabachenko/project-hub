@@ -13,7 +13,7 @@ import { useComposedRefs } from "@/lib/compose-refs";
 import { cn } from "@/lib/utils";
 import { useIsomorphicLayoutEffect } from "@/shared/hooks/use-isomorphic-layout-effect";
 import { useLazyRef } from "@/shared/hooks/use-lazy-ref";
-import { MilestoneStatus } from "@/generated/prisma";
+import type { MilestoneStatus } from "@/generated/prisma";
 
 
 
@@ -191,6 +191,11 @@ function Timeline(props: TimelineProps) {
   }));
 
   const store = React.useMemo<Store>(() => {
+    const notify = () => {
+    for (const cb of listenersRef.current) {
+      cb();
+    }
+  };
     return {
       subscribe: (cb) => {
         listenersRef.current.add(cb);
@@ -207,11 +212,11 @@ function Timeline(props: TimelineProps) {
         ref: React.RefObject<ItemElement | null>,
       ) => {
         stateRef.current.items.set(id, ref);
-        store.notify();
+        notify();
       },
       onItemUnregister: (id: string) => {
         stateRef.current.items.delete(id);
-        store.notify();
+        notify();
       },
       getNextItemStatus: (id: string, activeIndex?: number) => {
         const entries = Array.from(stateRef.current.items.entries());
@@ -250,7 +255,7 @@ function Timeline(props: TimelineProps) {
       <TimelineContext.Provider value={contextValue}>
         <RootPrimitive
           role="list"
-          aria-orientation={orientation}
+          // aria-orientation={orientation}
           data-slot="timeline"
           data-orientation={orientation}
           data-variant={variant}
