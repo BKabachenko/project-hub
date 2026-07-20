@@ -31,7 +31,10 @@ export const formSchema = z.object({
     .max(CREATION_PROJECT_SCHEMA_LIMITS.DESCRIPTION_MAX),
   category: z.enum(ProjectCategory),
   type: z.array(z.enum(ProjectType)).min(CREATION_PROJECT_SCHEMA_LIMITS.TYPE_MIN),
-  gitUrl: z.string().max(CREATION_PROJECT_SCHEMA_LIMITS.GITURL_MAX).optional(),
+  gitUrl: z
+    .url({ protocol: /^https?$/ })
+    .max(CREATION_PROJECT_SCHEMA_LIMITS.GITURL_MAX)
+    .optional(),
   milestones: z
     .array(
       z.object({
@@ -60,7 +63,11 @@ export const formSchema = z.object({
           .max(CREATION_PROJECT_SCHEMA_LIMITS.REQUIREMENTS_REQUIRE_COUNT_MAX),
         techStack: z
           .array(z.string())
-          .min(CREATION_PROJECT_SCHEMA_LIMITS.REQUIREMENTS_TECHSTACK_MIN),
+          .transform((items) => Array.from(new Set(items)))
+          .pipe(
+            z.array(z.string())
+            .min(CREATION_PROJECT_SCHEMA_LIMITS.REQUIREMENTS_TECHSTACK_MIN)
+          ),
       })
     )
     .min(CREATION_PROJECT_SCHEMA_LIMITS.REQUIREMENTS_MIN)
