@@ -25,7 +25,7 @@ export function timeAgo(dateString: Date) {
     if (Math.abs(diffInSeconds) < interval.limit) {
       const val = Math.round(
         diffInSeconds /
-          (interval.limit === 60 ? 1 : intervals[intervals.indexOf(interval) - 1].limit)
+          (interval.limit === 60 ? 1 : intervals[intervals.indexOf(interval) - 1]!.limit)
       );
       return rtf.format(val, interval.unit);
     }
@@ -43,4 +43,24 @@ export const debounce = <Args extends unknown[]>(func: (...args: Args) => void, 
 export const toArray = <T>(value: T | T[] | undefined): T[] => {
   if (!value) return [];
   return Array.isArray(value) ? [...value] : [value];
+};
+
+export const truncateTextByLengthSafe = (
+  text: string,
+  maxLength: number,
+  withDots: boolean = true
+) => {
+  let newText = text;
+
+  if (text.length > maxLength) {
+    const sliced = text.slice(0, maxLength);
+    const lastSpaceIndex = sliced.lastIndexOf(' ');
+    newText = lastSpaceIndex > 0 ? sliced.slice(0, lastSpaceIndex) : sliced;
+    newText = newText.replace(/[,.!?;:]$/, '');
+    if (withDots) {
+      newText += '...';
+    }
+  }
+
+  return newText;
 };
