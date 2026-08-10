@@ -25,9 +25,6 @@ const ApplyToProjectBlock = ({projectId, authorUser }: ApplyToProjectBlockProps)
           <Button variant={'default'} type={'button'} asChild>
             <Link href={`/projects/${projectId}/apply`}>Apply Now</Link>
           </Button>
-          <Button variant={'secondary'} type={'button'}>
-            <Link href={`/projects/${projectId}/question`}>Ask a question</Link>
-          </Button>
         </div>
         <Separator />
         <div className='flex flex-row items-center gap-2'>
