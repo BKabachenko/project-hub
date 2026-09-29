@@ -1,4 +1,5 @@
 import {
+    ApplicationStatus,
   MemberRole,
   MilestoneStatus,
   ProjectCategory,
@@ -93,3 +94,11 @@ export const milestonesStatusLabels = {
   [MilestoneStatus.CANCELLED]: 'Canceled',
   [MilestoneStatus.PLANNED]: 'Planned',
 } as const satisfies Record<MilestoneStatus, string>;
+
+export const applicationStatusLabels = {
+  [ApplicationStatus.APPROVED]: 'Approved',
+  [ApplicationStatus.DECLINED]: 'Declined',
+  [ApplicationStatus.PENDING]: 'Pending',
+  [ApplicationStatus.WITHDRAWN]: 'Withdraw',
+} as const satisfies Record<ApplicationStatus, string>;
+

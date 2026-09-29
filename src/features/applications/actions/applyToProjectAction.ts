@@ -4,73 +4,102 @@ import { revalidatePath } from 'next/cache';
 
 import z from 'zod';
 
+import { type ApplyFormParams } from '../types';
+
 import { auth } from '@/auth';
-import { MemberRole } from '@/generated/prisma';
+import { ApplicationStatus } from '@/generated/prisma';
 import type { ActionState } from '@/lib/constants';
 import prisma from '@/lib/prisma';
 
-const FormSchema = z.object({
-  requirementId: z.cuid2(),
-  coverLetter: z
-  .string()
-  .trim()
-  .normalize()
-  .min(100)
-  .max(2500)
-  .optional(),
-});
+import { applyFormSchema } from '../schemas';
 
-type FormParams = z.infer<typeof FormSchema>;
-
-export async function applyToProjectAction(formData: FormParams): Promise<ActionState> {
+async function applyToProjectAction(formData: ApplyFormParams): Promise<ActionState> {
   const session = await auth();
   if (!session?.user?.id) {
     return { success: false, message: `Unauthorized or missing user data!` };
   }
   const userId = session.user.id;
 
-  const { success, data, error } = FormSchema.safeParse(formData);
+  const { success, data, error } = applyFormSchema.safeParse(formData);
 
-  // if (!success) {
-  //   const fieldErrors = issuesToFieldErrors(error.issues);
-
-  //   return {
-  //     success: false,
-  //     message: 'Invalid form data!',
-  //     fieldErrors,
-  //   };
-  // }
+  if (!success) {
+    return {
+      success: false,
+      message: 'Invalid form data!',
+      fieldErrors: z.flattenError(error).fieldErrors,
+    };
+  }
 
   try {
-    const confirmData = await prisma.application.upsert({
-      where: {
-        id: validatedFields.data.projectId,
-      },
-      select: {
-        id: true,
-        projectMembers: {
+    const result = await prisma.$transaction(
+      async (tx) => {
+        const requirement = await tx.projectRequirement.findUnique({
           where: {
-            userId: session.user.id,
-            projectId: validatedFields.data.projectId,
-            role: validatedFields.data.memberRole,
+            id: data.requirementId,
           },
-          select: {
-            role: true,
-          },
-        },
+        });
+
+        if (!requirement) {
+          throw new Error('Requirement does not exist.');
+        }
+
+        if (data.action === 'apply') {
+          if (requirement.openPositionsCount <= 0) {
+            throw new Error('Requirement does not have open positions.');
+          }
+
+          await tx.application.upsert({
+            where: {
+              userId_requirementId: {
+                requirementId: data.requirementId,
+                userId: userId,
+              },
+              status: { not: ApplicationStatus.APPROVED },
+            },
+            update: { status: ApplicationStatus.PENDING, coverLetter: data.coverLetter },
+            create: {
+              userId: userId,
+              requirementId: data.requirementId,
+              coverLetter: data.coverLetter,
+            },
+          });
+          return { success: true, message: 'Application submitted successfully!' };
+        }
+
+        if (data.action === 'withdraw') {
+          const withdrawResult = await tx.application.update({
+            where: {
+              userId_requirementId: {
+                requirementId: data.requirementId,
+                userId: userId,
+              },
+              status: ApplicationStatus.PENDING,
+            },
+            data: { status: ApplicationStatus.WITHDRAWN },
+          });
+
+          if (!withdrawResult) {
+            throw new Error('Application does not exist.');
+          }
+
+          return { success: true, message: 'Application withdrawn successfully!' };
+        }
+
+        throw new Error('Unexpected action.');
       },
-    });
+      { isolationLevel: 'RepeatableRead' }
+    );
 
-    if (!confirmData) {
-      return { success: false, message: `Project does not exist.` };
+    revalidatePath('/dashboard');
+    revalidatePath(`/projects/${data.projectId}`);
+    return result;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error);
+      return { success: false, message: error.message };
     }
-    if (confirmData?.projectMembers.length > 0) {
-      return { success: false, message: `You already apply for this role.` };
-    }
-
-    revalidatePath(`/projects/${validatedFields.data.projectId}`);
-    return { success: true, message: `Done!` };
-  } catch (_) {
-    return { success: false, message: `Something went wrong! Try again later!` };
+    return { success: false, message: 'Something went wrong! Please try again later.' };
   }
 }
+
+export default applyToProjectAction;

@@ -1,46 +1,31 @@
-'use client';
+import { notFound } from 'next/navigation';
 
-import { useRouter } from 'next/navigation';
+import { auth } from '@/auth';
+import { ModalContent, getUserApplicationsForProject } from '@/features/applications';
+import { getProjectData } from '@/features/projects/ProjectOverview';
 
-import { Button } from '@/shared/components/ui/button';
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/shared/components/ui/dialog';
-import ApplyToProjectForm from '@/features/applications/components/applyToProjectForm';
+interface ApplyToProjectPageProps {
+  params: Promise<{ projectId: string }>;
+}
 
-const ModalPage = () => {
-  const router = useRouter();
+const ApplyToProjectModalPage = async ({ params }: ApplyToProjectPageProps) => {
+  const session = await auth();
+  const userId = session?.user?.id;
 
-  const closeHandles = () => {
-    router.back();
-  };
+  const { projectId } = await params;
+  const project = await getProjectData(projectId);
 
-  return (
-    <div>
-      <Dialog defaultOpen={true} onOpenChange={() => closeHandles()}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Title</DialogTitle>
-            <DialogDescription>
-              Decription
-            </DialogDescription>
-          </DialogHeader>
-          <ApplyToProjectForm/>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant='outline'>Close</Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
-  );
+  if (!userId) {
+    return notFound();
+  }
+
+  if (!project) {
+    return notFound();
+  }
+
+  const userRequirements = await getUserApplicationsForProject(userId, project.requirements);
+
+  return <ModalContent requirements={project.requirements} applications={userRequirements} />;
 };
 
-export default ModalPage;
+export default ApplyToProjectModalPage;
