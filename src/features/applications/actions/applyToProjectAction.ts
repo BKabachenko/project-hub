@@ -7,7 +7,7 @@ import z from 'zod';
 import { type ApplyFormParams } from '../types';
 
 import { auth } from '@/auth';
-import { ApplicationStatus } from '@/generated/prisma';
+import { ApplicationStatus, ProjectStatus } from '@/generated/prisma';
 import type { ActionState } from '@/lib/constants';
 import prisma from '@/lib/prisma';
 
@@ -37,10 +37,26 @@ async function applyToProjectAction(formData: ApplyFormParams): Promise<ActionSt
           where: {
             id: data.requirementId,
           },
+          include: {
+            project: {
+              select: {
+                id: true,
+                status: true,
+              },
+            },
+          },
         });
 
         if (!requirement) {
           throw new Error('Requirement does not exist.');
+        }
+
+        if (requirement.projectId !== data.projectId) {
+          throw new Error('Requirement does not belong to this project.');
+        }
+
+        if (requirement.project.status !== ProjectStatus.ACTIVE) {
+          throw new Error('Project is not active.');
         }
 
         if (data.action === 'apply') {

@@ -1,6 +1,6 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
-import { auth } from '@/auth';
+import { auth, signIn } from '@/auth';
 import { ApplyToProjectForm, getUserApplicationsForProject } from '@/features/applications';
 import { getProjectData } from '@/features/projects/ProjectOverview';
 import {
@@ -16,15 +16,22 @@ interface ApplyToProjectPageProps {
 }
 
 const ApplyToProjectPage = async ({ params }: ApplyToProjectPageProps) => {
-  const { projectId } = await params;
-  const project = await getProjectData(projectId);
   const session = await auth();
-
-  if (!project || !session?.user?.id) {
-    return notFound();
+  if (!session?.user) {
+    redirect('/login');
   }
 
   const userId = session.user.id;
+  if (!userId) {
+    throw new Error('CorruptedSessionError: User authenticated but ID is missing');
+  }
+
+  const { projectId } = await params;
+  const project = await getProjectData(projectId);
+
+  if (!project) {
+    return notFound();
+  }
 
   const userRequirements = await getUserApplicationsForProject(userId, project.requirements);
 

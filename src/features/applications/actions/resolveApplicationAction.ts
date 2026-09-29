@@ -191,7 +191,7 @@ const resolveApplicationAction = async ({
 
     if (error instanceof Error) {
       console.error(error);
-      return { success: false, message: 'Error.' };
+      return { success: false, message: error.message };
     }
     return { success: false, message: 'An unexpected error occurred.' };
   }

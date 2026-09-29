@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
 import { auth } from '@/auth';
 import { ModalContent, getUserApplicationsForProject } from '@/features/applications';
@@ -10,14 +10,16 @@ interface ApplyToProjectPageProps {
 
 const ApplyToProjectModalPage = async ({ params }: ApplyToProjectPageProps) => {
   const session = await auth();
-  const userId = session?.user?.id;
+  if (!session?.user) {
+    redirect('/login');
+  }
+  const userId = session.user.id;
+  if (!userId) {
+    throw new Error('CorruptedSessionError: User authenticated but ID is missing');
+  }
 
   const { projectId } = await params;
   const project = await getProjectData(projectId);
-
-  if (!userId) {
-    return notFound();
-  }
 
   if (!project) {
     return notFound();

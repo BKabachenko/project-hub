@@ -2,9 +2,8 @@
 
 import { useRouter } from 'next/navigation';
 
-import { ApplyToProjectForm } from '@/features/applications/components/ApplyToProjectForm';
-import { type ProjectRequirement } from '@/generated/prisma';
-import type { Application } from '@/generated/prisma';
+import { ApplyToProjectForm } from './ApplyToProjectForm';
+import { type Application, type ProjectRequirement } from '@/generated/prisma';
 import { Button } from '@/shared/components/ui/button';
 import {
   Dialog,
@@ -23,7 +22,7 @@ interface ModalContentProps {
 export const ModalContent = ({ requirements, applications }: ModalContentProps) => {
   const router = useRouter();
 
-  const closeHandles = () => {
+  const handleClose = () => {
     router.back();
   };
 
@@ -33,7 +32,12 @@ export const ModalContent = ({ requirements, applications }: ModalContentProps) 
 
   return (
     <div>
-      <Dialog defaultOpen={true} onOpenChange={() => closeHandles()}>
+      <Dialog
+        defaultOpen={true}
+        onOpenChange={(open) => {
+          if (!open) handleClose();
+        }}
+      >
         <DialogContent className={'max-h-[calc(100lvh-100px)] overflow-y-scroll sm:max-w-150'}>
           <DialogHeader className={'flex items-center'}>
             <DialogTitle>Apply for project role</DialogTitle>
