@@ -133,50 +133,61 @@ export const ApplyToProjectForm = ({
               required={true}
             >
               <p className={'font-semibold'}>Requirements</p>
-              {requirements.map((item) => (
-                <Field
-                  data-invalid={fieldState.invalid}
-                  key={item.id}
-                  className={'flex flex-row items-center'}
-                >
-                  <RadioGroupItem value={item.id} id={item.id} className={'max-w-4'} />
-                  <FieldLabel htmlFor={item.id}>
-                    <FieldContent>
-                      <Card className={'justify-start'}>
-                        <CardHeader>
-                          {applications.map(({ requirementId, status }) =>
-                            requirementId === item.id ? (
-                              <Badge variant={'outline'} key={status}>
-                                {applicationStatusLabels[status]}
+              {requirements.map((item) => {
+                const isFull = item.openPositionsCount <= 0;
+                const userApp = applications.find((a) => a.requirementId === item.id);
+                const isClosed = isFull && !userApp;
+
+                return (
+                  <Field
+                    data-invalid={fieldState.invalid}
+                    key={item.id}
+                    className={'flex flex-row items-center'}
+                  >
+                    <RadioGroupItem
+                      value={item.id}
+                      id={item.id}
+                      disabled={isClosed}
+                      className={'max-w-4'}
+                    />
+                    <FieldLabel htmlFor={item.id} className={isClosed ? 'opacity-60' : ''}>
+                      <FieldContent>
+                        <Card className={'justify-start'}>
+                          <CardHeader>
+                            {userApp ? (
+                              <Badge variant={'outline'} key={userApp.status}>
+                                {applicationStatusLabels[userApp.status]}
                               </Badge>
-                            ) : null
-                          )}
+                            ) : isFull ? (
+                              <Badge variant={'secondary'}>Filled</Badge>
+                            ) : null}
 
-                          <CardTitle className={'text-lg font-semibold'}>
-                            {memberRoleLabels[item.role]}
-                          </CardTitle>
-                          <CardDescription className={'text-muted-foreground'}>
-                            {`${item.requiredCount - item.openPositionsCount} of ${item.requiredCount} filled`}
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent className={'flex flex-row flex-wrap gap-2'}>
-                          {item.techStack.map((item) => (
-                            <Badge
-                              key={item}
-                              variant={'role'}
-                              className={'h-auto p-1 px-3 wrap-anywhere whitespace-normal'}
-                            >
-                              {item}
-                            </Badge>
-                          ))}
-                        </CardContent>
-                      </Card>
-                    </FieldContent>
-                  </FieldLabel>
+                            <CardTitle className={'text-lg font-semibold'}>
+                              {memberRoleLabels[item.role]}
+                            </CardTitle>
+                            <CardDescription className={'text-muted-foreground'}>
+                              {`${item.requiredCount - item.openPositionsCount} of ${item.requiredCount} filled`}
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent className={'flex flex-row flex-wrap gap-2'}>
+                            {item.techStack.map((tech) => (
+                              <Badge
+                                key={tech}
+                                variant={'role'}
+                                className={'h-auto p-1 px-3 wrap-anywhere whitespace-normal'}
+                              >
+                                {tech}
+                              </Badge>
+                            ))}
+                          </CardContent>
+                        </Card>
+                      </FieldContent>
+                    </FieldLabel>
 
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                </Field>
-              ))}
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                );
+              })}
             </RadioGroup>
           )}
         />
