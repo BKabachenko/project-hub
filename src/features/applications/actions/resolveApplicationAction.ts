@@ -2,20 +2,17 @@
 
 import { revalidatePath } from 'next/cache';
 
-import {
-  PrismaClientKnownRequestError,
-  PrismaClientUnknownRequestError,
-} from '@prisma/client-runtime-utils';
 import z from 'zod';
 
 import { auth } from '@/auth';
+import { ApplicationStatus, Prisma, ProjectMemberStatus, ProjectStatus } from '@/generated/prisma';
 import type { ActionState } from '@/lib/constants';
 import prisma from '@/lib/prisma';
 
 const resolveApplicationSchema = z.object({
-  projectId: z.cuid2(),
-  applicationUserId: z.cuid2(),
-  requirementId: z.cuid2(),
+  projectId: z.cuid(),
+  applicationUserId: z.cuid(),
+  requirementId: z.cuid(),
   action: z.enum(['approve', 'decline']),
 });
 
@@ -61,6 +58,7 @@ const resolveApplicationAction = async ({
               },
               select: {
                 requiredCount: true,
+                openPositionsCount: true,
                 applications: {
                   where: {
                     userId: vData.data.applicationUserId,
@@ -72,7 +70,7 @@ const resolveApplicationAction = async ({
             projectMembers: {
               where: {
                 requirementId: vData.data.requirementId,
-                status: 'ACTIVE',
+                status: ProjectMemberStatus.ACTIVE,
               },
               select: {
                 userId: true,
@@ -89,21 +87,25 @@ const resolveApplicationAction = async ({
           throw new Error('You do not have permission to modify this project.');
         }
 
-        if (project.status !== 'ACTIVE') {
-          throw new Error('Project does not active.');
+        if (project.status !== ProjectStatus.ACTIVE) {
+          throw new Error('Project is not active.');
         }
 
         if (project.requirements.length !== 1) {
           throw new Error('Application not found.');
         }
 
-        if (project.requirements[0]?.applications[0]?.status !== 'PENDING') {
-          throw new Error('User dont have pending application.');
+        if (project.requirements[0]?.applications[0]?.status !== ApplicationStatus.PENDING) {
+          throw new Error('Applicant does not have a pending application.');
         }
 
         if (vData.data.action === 'approve') {
           if (project.requirements[0].requiredCount <= project.projectMembers.length) {
-            throw new Error('Dont enought empty slots in this position.');
+            throw new Error('Not enough open positions for this role.');
+          }
+
+          if (project.requirements[0].openPositionsCount <= 0) {
+            throw new Error('Not enough open positions for this role.');
           }
 
           const isUserInMembers = project.projectMembers.some(
@@ -122,13 +124,13 @@ const resolveApplicationAction = async ({
               },
             },
             update: {
-              status: 'ACTIVE',
+              status: ProjectMemberStatus.ACTIVE,
             },
             create: {
               userId: vData.data.applicationUserId,
               projectId: vData.data.projectId,
               requirementId: vData.data.requirementId,
-              status: 'ACTIVE',
+              status: ProjectMemberStatus.ACTIVE,
             },
           });
 
@@ -140,7 +142,7 @@ const resolveApplicationAction = async ({
               },
             },
             data: {
-              status: 'APPROVED',
+              status: ApplicationStatus.APPROVED,
             },
           });
 
@@ -151,7 +153,7 @@ const resolveApplicationAction = async ({
             },
           });
 
-          return { success: true, message: 'User successfully approved!' };
+          return { success: true, message: 'Applicant successfully approved!' };
         }
 
         if (vData.data.action === 'decline') {
@@ -163,11 +165,11 @@ const resolveApplicationAction = async ({
               },
             },
             data: {
-              status: 'DECLINED',
+              status: ApplicationStatus.DECLINED,
             },
           });
 
-          return { success: true, message: 'User successfully declined!' };
+          return { success: true, message: 'Applicant successfully declined!' };
         }
 
         throw new Error('Unexpected action.');
@@ -176,21 +178,22 @@ const resolveApplicationAction = async ({
     );
 
     revalidatePath('/dashboard');
+    revalidatePath(`/projects/${vData.data.projectId}`);
     return result;
   } catch (error) {
-    if (error instanceof PrismaClientKnownRequestError) {
-      return { success: false, message: 'Known prisma error.' };
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return { success: false, message: 'Database operation failed.' };
     }
 
-    if (error instanceof PrismaClientUnknownRequestError) {
-      return { success: false, message: 'Unknown prisma error.' };
+    if (error instanceof Prisma.PrismaClientUnknownRequestError) {
+      return { success: false, message: 'Unexpected database error.' };
     }
 
     if (error instanceof Error) {
-      console.log(error);
-      return { success: false, message: 'Error.' };
+      console.error(error);
+      return { success: false, message: error.message };
     }
-    return { success: false, message: 'Unknown error.' };
+    return { success: false, message: 'An unexpected error occurred.' };
   }
 };
 
