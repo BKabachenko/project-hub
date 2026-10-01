@@ -61,10 +61,10 @@ const OwnerApplicantsList = ({ applicants }: OwnerApplicantsListProps) => {
 
   return (
     <>
-      {optimisticApplicantsList.map((applicant) => (
+      {optimisticApplicantsList.map((application) => (
         <OwnerProjectApplicantBlock
-          key={applicant.userId}
-          applicant={applicant}
+          key={application.id}
+          applicant={application}
           handleResolveApplication={handleResolveApplication}
         />
       ))}
