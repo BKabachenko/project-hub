@@ -1,15 +1,6 @@
 import type { ProjectRequirementsPayload } from '../types';
 
-import { memberRoleLabels } from '@/lib/constants';
-import { Badge } from '@/shared/components/ui/badge';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/shared/components/ui/card';
-
+import RequirementCard from '@/shared/components/domain/RequirementCard';
 interface ProjectRequirementsBlockProps {
   requirements: ProjectRequirementsPayload;
 }
@@ -26,26 +17,8 @@ const ProjectRequirementsBlock = ({ requirements }: ProjectRequirementsBlockProp
         </span>
       </div>
       <div className='grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4'>
-        {requirements.map(({ id, openPositionsCount, requiredCount, role, techStack }) => (
-          <Card className={'justify-start'} key={id}>
-            <CardHeader>
-              <CardTitle className={'text-lg font-semibold'}>{memberRoleLabels[role]}</CardTitle>
-              <CardDescription className={'text-muted-foreground'}>
-                {requiredCount - openPositionsCount} of {requiredCount} filled
-              </CardDescription>
-            </CardHeader>
-            <CardContent className={'flex flex-row flex-wrap gap-2'}>
-              {techStack.map((item) => (
-                <Badge
-                  key={item}
-                  variant={'role'}
-                  className={'h-auto p-1 px-3 wrap-anywhere whitespace-normal'}
-                >
-                  {item}
-                </Badge>
-              ))}
-            </CardContent>
-          </Card>
+        {requirements.map((requirement) => (
+          <RequirementCard key={requirement.id} {...requirement} />
         ))}
       </div>
     </div>
