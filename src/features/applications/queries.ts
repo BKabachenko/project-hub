@@ -15,3 +15,36 @@ export const getUserApplicationsForProject = cache(
     });
   }
 );
+
+export const getApplicationForOwner = async (
+  applicationId: string,
+  userId: string
+) => {
+  return await prisma.application.findFirst({
+    where: {
+      id: applicationId,
+      requirement: { project: { authorId: userId } },
+    },
+    include: {
+      requirement: {
+        include: {
+          project: {
+            select: {
+              id: true,
+              title: true,
+            },
+          },
+        },
+      },
+      user: {
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          image: true,
+          createdAt: true,
+        },
+      },
+    },
+  });
+};
