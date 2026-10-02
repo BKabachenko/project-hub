@@ -50,7 +50,7 @@ const OwnerProjectApplicantBlock = ({
       </div>
       <div className='flex flex-col gap-2 sm:flex-row'>
         <Button variant={'outline'} size={'sm'} asChild>
-          <Link href={`dashboard/applications/${applicant.id}`} target={'_blank'}>
+          <Link href={`/dashboard/applications/${applicant.id}`} target={'_blank'}>
             DETAILS
           </Link>
         </Button>

@@ -16,10 +16,7 @@ export const getUserApplicationsForProject = cache(
   }
 );
 
-export const getApplicationForOwner = async (
-  applicationId: string,
-  userId: string
-) => {
+export const getApplicationForOwner = cache(async (applicationId: string, userId: string) => {
   return await prisma.application.findFirst({
     where: {
       id: applicationId,
@@ -47,4 +44,4 @@ export const getApplicationForOwner = async (
       },
     },
   });
-};
+});

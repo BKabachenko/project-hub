@@ -1,8 +1,7 @@
-import { signIn } from 'next-auth/react';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
-import { auth } from '@/auth';
+import { auth, signIn } from '@/auth';
 import {
   ApplicantInfoCard,
   ApplicationActionButtons,
@@ -29,24 +28,20 @@ const ApplicationDetailsPage = async ({ params }: ApplicationDetailsPageProps) =
   const { applicationId } = await params;
   const application = await getApplicationForOwner(applicationId, userId);
   if (!application) {
-    return (
-      <div>
-        <p>Application not exist</p>
-        <p>
-          <Link href={'/'}>To main page</Link>
-        </p>
-      </div>
-    );
+    notFound();
   }
 
-  const applicationIsFilled = application.requirement.openPositionsCount<=0;
+  const applicationIsFilled = application.requirement.openPositionsCount <= 0;
   const buttonsIsDisabled = application.status !== 'PENDING' || applicationIsFilled;
   return (
     <div className={'flex flex-col gap-4 md:gap-6'}>
       <div className='flex flex-col gap-2'>
         <p className={'text-muted-foreground font-medium'}>APPLICATION OVERVIEW</p>
         <h2 className={'text-2xl font-extrabold'}>
-          Application to {application?.requirement.project.title}
+          Application to{' '}
+          <Link href={`/projects/${application.requirement.projectId}`} className='hover:underline'>
+            {application.requirement.project.title}
+          </Link>
         </h2>
       </div>
 
@@ -61,7 +56,11 @@ const ApplicationDetailsPage = async ({ params }: ApplicationDetailsPageProps) =
           <CardTitle>Cover letter</CardTitle>
         </CardHeader>
         <CardContent className={'wrap-anywhere whitespace-pre-wrap'}>
-          {application.coverLetter ?? <p className={'text-muted-foreground'}>Nothing there.</p>}
+          {application.coverLetter?.trim() ? (
+            application.coverLetter
+          ) : (
+            <p className='text-muted-foreground italic'>No cover letter provided.</p>
+          )}
         </CardContent>
       </Card>
 

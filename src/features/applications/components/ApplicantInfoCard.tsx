@@ -21,18 +21,16 @@ export const ApplicantInfoCard = ({ user }: ApplicantInfoCardProps) => {
             'flex flex-col flex-wrap items-center justify-start gap-8 align-middle sm:flex-row'
           }
         >
-          <div className={'overflow-hidden rounded-2xl'}>
-            <Avatar className={'h-30 w-30 overflow-hidden rounded-2xl after:border-none'}>
-              <AvatarImage
-                src={user.image || undefined}
-                alt={`${user.name}'s avatar.`}
-                className={'rounded-2xl'}
-              />
-              <AvatarFallback className={'rounded-2xl text-lg'}>
-                {user.name?.[0] || <UserIcon />}
-              </AvatarFallback>
-            </Avatar>
-          </div>
+          <Avatar className={'size-28 overflow-hidden rounded-2xl after:border-none'}>
+            <AvatarImage
+              src={user.image || undefined}
+              alt={`${user.name ?? 'Applicant'}'s avatar`}
+              className={'rounded-2xl'}
+            />
+            <AvatarFallback className={'rounded-2xl text-lg'}>
+              {user.name?.[0] || <UserIcon />}
+            </AvatarFallback>
+          </Avatar>
           <div
             className={
               'flex flex-col items-center justify-around gap-2 text-center text-lg font-normal wrap-anywhere sm:items-start sm:text-start'
