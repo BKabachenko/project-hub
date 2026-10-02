@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 
 import { FileUser } from 'lucide-react';
 
@@ -48,8 +49,10 @@ const OwnerProjectApplicantBlock = ({
         </div>
       </div>
       <div className='flex flex-col gap-2 sm:flex-row'>
-        <Button variant={'outline'} size={'sm'}>
-          DETAILS
+        <Button variant={'outline'} size={'sm'} asChild>
+          <Link href={`/dashboard/applications/${applicant.id}`} target={'_blank'}>
+            DETAILS
+          </Link>
         </Button>
         <Button
           variant={'default'}
