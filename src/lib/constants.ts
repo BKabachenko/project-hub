@@ -22,6 +22,8 @@ export const initialState: ActionState = {
   success: false,
 };
 
+export const SEARCH_KEY = 'query' as const;
+
 export const userStatusLabels = {
   [UserStatus.ACTIVE]: 'Active',
   [UserStatus.DELETED]: 'Deleted',

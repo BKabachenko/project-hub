@@ -4,8 +4,6 @@ import { memberRoleLabels, projectStatusLabels, projectTypeLabels } from '@/lib/
 
 export const FILTER_KEYS = ['status', 'category', 'role'] as const;
 
-export const SEARCH_KEY = 'query' as const;
-
 export const FILTER_LABEL_MAP: Record<FilterKey, Record<string, string>> = {
   category: projectTypeLabels,
   role: memberRoleLabels,
