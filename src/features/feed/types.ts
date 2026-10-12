@@ -1,6 +1,8 @@
 import type z from 'zod';
 
-import type { FILTER_KEYS, SEARCH_KEY } from './constants';
+import type { SEARCH_KEY } from '@/lib/constants';
+
+import type { FILTER_KEYS } from './constants';
 import type { filterParamsSchema } from './schema';
 
 export type SearchKey = typeof SEARCH_KEY;
