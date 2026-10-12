@@ -1,11 +1,12 @@
+import { CARDS, CardList, HeroBlock } from '@/features/home';
 
-const Home = () => {
-
+const HomePage = () => {
   return (
-    <div>
-      page
+    <div className={'flex flex-col h-full justify-center gap-4'}>
+      <HeroBlock />
+      <CardList featureCards={CARDS} />
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default HomePage;
