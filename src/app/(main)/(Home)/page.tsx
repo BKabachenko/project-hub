@@ -1,45 +1,20 @@
-import type { resolvedParamsType } from '@/features/feed';
-import {
-  FilterBadgeBlock,
-  FilterBlock,
-  FilterSheet,
-  ProjectCard,
-  SearchBar,
-  getProjects,
-} from '@/features/feed';
+import type { Metadata } from 'next';
 
-interface HomePageProps {
-  searchParams: Promise<resolvedParamsType>;
-}
+import { CARDS, CardList, HeroBlock } from '@/features/home';
 
-export default async function Home({ searchParams }: HomePageProps) {
-  const resolvedParams = await searchParams;
+export const metadata: Metadata = {
+  title: 'Project Hub — Find your missing piece. Build something that matters.',
+  description:
+    'Connect with developers, designers, and creators across every discipline. Discover pet projects, open-source initiatives, and collaborations.',
+};
 
-  const projects = await getProjects(resolvedParams);
-
+const HomePage = () => {
   return (
-    <>
-      <div className='flex flex-col justify-center gap-4 md:flex-row'>
-        <div className='flex flex-1 flex-col gap-8'>
-          <div className='flex flex-row justify-between gap-2'>
-            <SearchBar />
-            <div className='border-border bg-input w-16 rounded-lg border shadow-md md:hidden'>
-              <FilterSheet />
-            </div>
-          </div>
-          <div className='flex flex-row flex-wrap items-center gap-2'>
-            <FilterBadgeBlock searchParams={resolvedParams} />
-          </div>
-          <div className='flex flex-col gap-y-10'>
-            {projects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
-          </div>
-        </div>
-        <aside className={'hidden md:block'}>
-          <FilterBlock />
-        </aside>
-      </div>
-    </>
+    <div className={'flex h-full flex-col justify-center gap-4 sm:gap-12'}>
+      <HeroBlock />
+      <CardList featureCards={CARDS} />
+    </div>
   );
-}
+};
+
+export default HomePage;
