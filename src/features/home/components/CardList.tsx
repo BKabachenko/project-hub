@@ -3,7 +3,7 @@ import { type FeatureCardType } from '../types';
 import FeatureCard from './FeatureCard';
 
 interface CardListProps {
-  featureCards: FeatureCardType[];
+  featureCards: readonly FeatureCardType[];
 }
 
 export const CardList = ({ featureCards }: CardListProps) => {

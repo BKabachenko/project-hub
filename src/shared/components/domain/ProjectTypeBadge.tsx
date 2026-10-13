@@ -32,16 +32,9 @@ interface ProjectTypeBadgeProps {
   children?: string;
 }
 const ProjectTypeBadge = ({ type, className, children }: ProjectTypeBadgeProps) => {
-  let label;
-
   const styles = 'px-2 py-0.5 rounded text-foreground font-semibold ';
   const typeStyles = projectTypeConfig[type].className;
-
-  if (!children) {
-    label = projectTypeConfig[type].label.toUpperCase();
-  } else {
-    label = children;
-  }
+  const label = children ?? projectTypeConfig[type].label.toUpperCase();
 
   return (
     <Badge variant={'secondary'} className={cn(styles, typeStyles, className)}>

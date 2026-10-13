@@ -2,9 +2,11 @@ import { BriefcaseBusiness, Handshake, Rocket, Sprout } from 'lucide-react';
 
 import { type FeatureCardType } from './types';
 
+import { ProjectType } from '@/generated/prisma';
+
 export const CARDS = [
   {
-    name: 'PET_PROJECT',
+    name: ProjectType.PET_PROJECT,
     title: 'Study & Skill Up',
     description:
       'Join cohorts, peer code & design reviews, and build real portfolio work alongside helpful mentors.',
@@ -15,7 +17,7 @@ export const CARDS = [
     tags: ['Cohorts', 'Portfolio'],
   },
   {
-    name: 'OPEN_SOURCE',
+    name: ProjectType.OPEN_SOURCE,
     title: 'Launch a Startup',
     description:
       'Meet aligned co-founders, validate MVPs quickly, and execute cross-functional 0-to-1 build sprints.',
@@ -26,7 +28,7 @@ export const CARDS = [
     tags: ['Equity', 'Co-Founders'],
   },
   {
-    name: 'CHARITY',
+    name: ProjectType.CHARITY,
     title: 'Social Good & Offline',
     description:
       'Empower non-profit tools, grassroots civic initiatives, environmental tech, and community relief efforts.',
@@ -37,7 +39,7 @@ export const CARDS = [
     tags: ['Civic', 'Open Access'],
   },
   {
-    name: 'COMMERCIAL',
+    name: ProjectType.COMMERCIAL,
     title: 'Paid Sprints & Gigs',
     description:
       'Take on scoped, short-term contract milestones with verified teams and guaranteed project stipends.',
@@ -47,4 +49,4 @@ export const CARDS = [
     iconColor: 'text-commercial',
     tags: ['Milestones', 'Stipends'],
   },
-] satisfies FeatureCardType[];
+] as const satisfies readonly FeatureCardType[];

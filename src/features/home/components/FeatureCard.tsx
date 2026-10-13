@@ -35,12 +35,11 @@ const FeatureCard = ({ featureCard }: FeatureCardProps) => {
   } = featureCard;
 
   return (
-    <Link href={LINK[name]}>
-      <Card
-        className={
-          'group border-border/20 hover:border-border/60 border transition-all hover:shadow-md'
-        }
-      >
+    <Link
+      href={LINK[name]}
+      className='group focus-visible:ring-ring block h-full rounded-xl focus-visible:ring-2 focus-visible:outline-hidden'
+    >
+      <Card className='border-border/30 hover:border-border/70 flex h-full flex-col justify-between border transition-all hover:shadow-md'>
         <CardHeader className={'flex flex-col gap-2'}>
           <div className='flex w-full flex-row items-center justify-between'>
             <div className={cn('flex items-center justify-center rounded-lg p-2', badgeBg)}>
@@ -56,6 +55,7 @@ const FeatureCard = ({ featureCard }: FeatureCardProps) => {
             {title}
           </h2>
         </CardHeader>
+
         <CardContent className={'flex flex-col gap-3'}>
           <p className={'text-xs leading-relaxed'}>{description}</p>
           <Separator orientation={'horizontal'} />
