@@ -11,15 +11,15 @@ interface FilterBadgeBlockProps {
 const FilterBadgeBlock = ({ searchParams }: FilterBadgeBlockProps) => {
   if (!searchParams) return null;
 
-  const activeBadges = FILTER_KEYS.flatMap((key) =>
-    toArray(searchParams[key])
-      .filter((value) => FILTER_LABEL_MAP[key][value])
-      .map((value) => ({
-        id: key,
-        value,
-        label: FILTER_LABEL_MAP[key][value],
-      }))
-  );
+  const activeBadges = FILTER_KEYS.flatMap((key) => {
+    const values = toArray(searchParams[key]);
+    const labelValues = FILTER_LABEL_MAP[key];
+
+    return values.flatMap((value) => {
+      const label = labelValues[value];
+      return label ? [{ id: key, value, label }] : [];
+    });
+  });
 
   if (activeBadges.length === 0) return null;
 
@@ -27,7 +27,7 @@ const FilterBadgeBlock = ({ searchParams }: FilterBadgeBlockProps) => {
     <>
       <span className={'text-sm font-light'}>Showing:</span>
       {activeBadges.map(({ id, value, label }) => (
-        <FilterBadge key={value} id={id} value={value} label={label}/>
+        <FilterBadge key={`${id}-${value}`} id={id} value={value} label={label} />
       ))}
     </>
   );
