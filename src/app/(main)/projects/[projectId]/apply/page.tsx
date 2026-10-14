@@ -2,7 +2,7 @@ import { notFound, redirect } from 'next/navigation';
 
 import { auth, signIn } from '@/auth';
 import { ApplyToProjectForm, getUserApplicationsForProject } from '@/features/applications';
-import { getProjectData } from '@/features/projects/ProjectOverview';
+import { getProjectData } from '@/features/projects';
 import {
   Card,
   CardContent,
@@ -17,13 +17,13 @@ interface ApplyToProjectPageProps {
 
 const ApplyToProjectPage = async ({ params }: ApplyToProjectPageProps) => {
   const session = await auth();
-  if (!session?.user) {
-    redirect('/login');
+  if (!session?.user?.id) {
+    await signIn();
   }
 
-  const userId = session.user.id;
+  const userId = session?.user?.id;
   if (!userId) {
-    throw new Error('CorruptedSessionError: User authenticated but ID is missing');
+    redirect('/');
   }
 
   const { projectId } = await params;
