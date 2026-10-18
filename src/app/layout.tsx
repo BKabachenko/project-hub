@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "next-themes";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const roboto = Roboto({subsets:['latin'],variable:'--font-sans'});
 
@@ -41,6 +42,7 @@ export default function RootLayout({
         {children}
         <Toaster position={"bottom-right"}/>
       </ThemeProvider>
+      <SpeedInsights />
       </body>
     </html>
   );
