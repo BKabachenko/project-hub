@@ -49,7 +49,7 @@ export async function createProjectAction(
         description: data.description,
         category: data.category,
         type: data.type,
-        gitUrl: data.gitUrl,
+        gitUrl: data.gitUrl ? data.gitUrl : undefined,
         requirements: {
           create: data.requirements.map((requirement) => ({
             role: requirement.role,

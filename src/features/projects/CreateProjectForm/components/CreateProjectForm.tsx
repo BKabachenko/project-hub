@@ -54,7 +54,7 @@ const CreateProjectForm = () => {
       if (result.success) {
         toast.success(result.message);
         if (result.data) {
-          router.push(`${result.data.newProjectId}`);
+          router.push(`/projects/${result.data.newProjectId}`);
         }
       }
     } catch (_) {

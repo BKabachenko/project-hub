@@ -34,10 +34,12 @@ export function timeAgo(dateString: Date) {
 
 export const debounce = <Args extends unknown[]>(func: (...args: Args) => void, delay: number) => {
   let timeout: ReturnType<typeof setTimeout>;
-  return function (...args: Args) {
+  const debounced = (...args: Args) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), delay);
   };
+  debounced.cancel = () => clearTimeout(timeout);
+  return debounced;
 };
 
 export const toArray = <T>(value: T | T[] | undefined): T[] => {

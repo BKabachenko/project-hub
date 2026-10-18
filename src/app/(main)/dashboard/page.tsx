@@ -1,11 +1,19 @@
-import { auth } from '@/auth';
+import { redirect } from 'next/navigation';
+
+import { auth, signIn } from '@/auth';
 import { MemberProjectsBlock, OwnerProjectBlock, StatisticCardsBlock } from '@/features/dashboard';
 import prisma from '@/lib/prisma';
 
 const DashboardPage = async () => {
   const session = await auth();
-  if (!session) return null;
-  const userId = session.user?.id;
+  if (!session) {
+    await signIn();
+  }
+
+  const userId = session?.user?.id;
+  if (!userId) {
+    redirect('/');
+  }
 
   const projects = await prisma.project.findMany({
     where: {
