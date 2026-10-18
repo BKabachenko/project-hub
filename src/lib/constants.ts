@@ -3,7 +3,6 @@ import {
   MemberRole,
   MilestoneStatus,
   ProjectCategory,
-  ProjectMemberStatus,
   ProjectStatus,
   ProjectType,
   UserStatus,

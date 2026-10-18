@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import Link from 'next/link';
 
@@ -8,10 +8,16 @@ import { ChevronDown, FileUser } from 'lucide-react';
 
 import type { ProjectWithDetails } from '../types';
 
-import { Button } from '@/shared/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/ui/card';
-import { Separator } from '@/shared/components/ui/separator';
 import { timeAgo } from '@/lib/utils';
+import { Button } from '@/shared/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/shared/components/ui/card';
+import { Separator } from '@/shared/components/ui/separator';
 
 import OwnerApplicantsList from './OwnerApplicantsList';
 
@@ -36,7 +42,7 @@ const OwnerProjectCard = ({ project }: OwnerProjectCardProps) => {
     <Card className={'shadow-md'} key={project.id}>
       <CardHeader>
         <CardTitle className={'text-lg font-bold'}>
-          <Link href={`./projects/${project.id}`}>{project.title}</Link>
+          <Link href={`/projects/${project.id}`}>{project.title}</Link>
         </CardTitle>
         <CardDescription>Launched {timeAgo(project.createdAt)}.</CardDescription>
       </CardHeader>

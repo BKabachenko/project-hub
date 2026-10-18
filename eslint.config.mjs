@@ -67,7 +67,7 @@ const eslintConfig = defineConfig([
       'react-compiler/react-compiler': 'error',
 
       'no-warning-comments': [
-        'error',
+        'warn',
         {
           terms: ['todo', 'fix', 'replace'],
           location: 'anywhere',

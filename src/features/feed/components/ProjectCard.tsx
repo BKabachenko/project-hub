@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 import type { ProjectWithPositions } from '@/shared/types';
 
+import { timeAgo } from '@/lib/utils';
 import { Badge } from '@/shared/components/ui/badge';
 import {
   Card,
@@ -24,8 +25,7 @@ const ProjectCard = ({ project }: { project: ProjectWithPositions }) => {
           <CardTitle className={'text-2xl font-bold'}>{project.title}</CardTitle>
         </Link>
         <CardDescription>
-          {/*TODO: add real create time*/}
-          <div className='text-muted-foreground text-sm'>Posted 2 hours ago</div>{' '}
+          <div className='text-muted-foreground text-sm'>Posted {timeAgo(project.createdAt)}</div>
         </CardDescription>
         <CardAction className={'order-first mb-4 flex gap-2 md:order-last'}>
           {project.type.map((type) => (
@@ -39,7 +39,7 @@ const ProjectCard = ({ project }: { project: ProjectWithPositions }) => {
         <div className='flex flex-row flex-wrap items-center justify-between gap-4'>
           <div className={'flex flex-row flex-wrap gap-2'}>
             {project.requirements.map((position) => (
-              <Badge key={position.role} variant={'role'}>
+              <Badge key={position.id} variant={'role'}>
                 {memberRoleLabels[position.role]}
               </Badge>
             ))}

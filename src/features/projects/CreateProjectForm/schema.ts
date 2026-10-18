@@ -34,6 +34,7 @@ export const formSchema = z.object({
   gitUrl: z
     .url({ protocol: /^https?$/ })
     .max(CREATION_PROJECT_SCHEMA_LIMITS.GITURL_MAX)
+    .or(z.literal(''))
     .optional(),
   milestones: z
     .array(
@@ -64,10 +65,7 @@ export const formSchema = z.object({
         techStack: z
           .array(z.string())
           .transform((items) => Array.from(new Set(items)))
-          .pipe(
-            z.array(z.string())
-            .min(CREATION_PROJECT_SCHEMA_LIMITS.REQUIREMENTS_TECHSTACK_MIN)
-          ),
+          .pipe(z.array(z.string()).min(CREATION_PROJECT_SCHEMA_LIMITS.REQUIREMENTS_TECHSTACK_MIN)),
       })
     )
     .min(CREATION_PROJECT_SCHEMA_LIMITS.REQUIREMENTS_MIN)
