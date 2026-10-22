@@ -11,23 +11,11 @@ import prisma from '@/lib/prisma';
 import { requireUser } from '@/lib/session';
 
 const DashboardPage = async () => {
-  const {userId, name} = await requireUser()
+  const { userId, name } = await requireUser();
 
   const projects = await prisma.project.findMany({
     where: {
-      OR: [
-        { authorId: userId },
-        {
-          projectMembers: {
-            some: {
-              userId: userId,
-              status: {
-                in: ['ACTIVE'],
-              },
-            },
-          },
-        },
-      ],
+      authorId: userId
     },
     select: {
       id: true,
@@ -77,9 +65,7 @@ const DashboardPage = async () => {
   });
 
   const userOwnedProjects = projects.filter((project) => project.authorId === userId);
-  const userParticipantProjects = projects.filter((project) =>
-    project.projectMembers.some((user) => user.userId === userId)
-  );
+
 
   const userName = name?.split(' ')[0] ?? 'User';
 
@@ -91,7 +77,9 @@ const DashboardPage = async () => {
       </div>
       <StatisticCardsBlock projects={projects} />
       <OwnerProjectBlock projects={userOwnedProjects} />
-      <MemberProjectsBlock projects={userParticipantProjects} />
+      <Suspense fallback={<UserApplicationsBlockSkeleton />}>
+        <MemberProjectsBlock />
+      </Suspense>
       <Suspense fallback={<UserApplicationsBlockSkeleton />}>
         <UserApplicationsBlock />
       </Suspense>

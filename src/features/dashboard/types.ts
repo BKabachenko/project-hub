@@ -44,3 +44,24 @@ export type ProjectMemberWithUser = Prisma.ApplicationGetPayload<{
     };
   };
 }>;
+
+export type MemberActiveProject = Prisma.ProjectGetPayload<{
+  select: {
+    id: true;
+    title: true;
+    status: true;
+    projectMembers: {
+      select: {
+        userId: true;
+        status: true;
+        updatedAt: true;
+        requirement: {
+          select: {
+            role: true;
+            updatedAt: true;
+          };
+        };
+      };
+    };
+  };
+}>;

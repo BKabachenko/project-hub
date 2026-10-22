@@ -1,14 +1,13 @@
-import type { ProjectWithDetails } from '../types';
-
 import { Card } from '@/shared/components/ui/card';
 
 import MemberProjectCard from './MemberProjectCard';
+import { getMemberActiveProjects } from '../queries';
 
-interface MemberProjectsBlockProps {
-  projects: ProjectWithDetails[];
-}
 
-const MemberProjectsBlock = ({ projects }: MemberProjectsBlockProps) => {
+
+const MemberProjectsBlock = async () => {
+  const projects = await getMemberActiveProjects();
+
   return (
     <div className={'flex flex-col gap-4'}>
       <h3 className={'text-2xl font-bold'}>Active Contributions</h3>

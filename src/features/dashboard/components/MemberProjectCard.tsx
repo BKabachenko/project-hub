@@ -1,22 +1,19 @@
 import Link from 'next/link';
 
-import type { ProjectWithDetails } from '../types';
+import type { MemberActiveProject } from '../types';
 
 import { memberRoleLabels } from '@/lib/constants';
-import { getAuthSession } from '@/lib/session';
 import { Badge } from '@/shared/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 
 interface MemberProjectCardProps {
-  project: ProjectWithDetails;
+  project: MemberActiveProject;
 }
 
-const MemberProjectCard = async ({ project }: MemberProjectCardProps) => {
-  const session = await getAuthSession();
-  if (!session) return null;
-  const userId = session.user?.id;
 
-  const userRoles = project.projectMembers.filter((member) => member.userId === userId);
+const MemberProjectCard = ({ project }:MemberProjectCardProps) => {
+
+  const userRoles = project.projectMembers;
 
   return (
     <Card className={'flex justify-between'}>

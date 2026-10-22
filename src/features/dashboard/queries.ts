@@ -1,5 +1,6 @@
 import prisma from '@/lib/prisma';
 import { requireUserId } from '@/lib/session';
+import { cache } from 'react';
 
 export const getUserSubmittedApplications = async () => {
   const userId = await requireUserId();
@@ -31,3 +32,44 @@ export const getUserSubmittedApplications = async () => {
     take: 50,
   });
 };
+
+export const getMemberActiveProjects = cache(async () => {
+  const userId = await requireUserId();
+
+  return await prisma.project.findMany({
+    where: {
+      projectMembers: {
+        some: {
+          userId: userId,
+          status: 'ACTIVE',
+        },
+      },
+    },
+    take: 50,
+    orderBy: {createdAt: 'asc'},
+    select: {
+      id: true,
+      title: true,
+      status: true,
+      category: true,
+      type: true,
+      projectMembers: {
+        where: {
+          userId: userId,
+          status: 'ACTIVE',
+        },
+        select: {
+          userId: true,
+          status: true,
+          updatedAt: true,
+          requirement: {
+            select: {
+              role: true,
+              updatedAt: true,
+            },
+          },
+        },
+      },
+    },
+  });
+});
