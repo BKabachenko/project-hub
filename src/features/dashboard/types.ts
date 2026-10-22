@@ -50,6 +50,8 @@ export type MemberActiveProject = Prisma.ProjectGetPayload<{
     id: true;
     title: true;
     status: true;
+    category: true;
+    type: true;
     projectMembers: {
       select: {
         userId: true;

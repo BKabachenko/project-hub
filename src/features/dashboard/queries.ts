@@ -46,7 +46,7 @@ export const getMemberActiveProjects = cache(async () => {
       },
     },
     take: 50,
-    orderBy: {createdAt: 'asc'},
+    orderBy: {createdAt: 'desc'},
     select: {
       id: true,
       title: true,
