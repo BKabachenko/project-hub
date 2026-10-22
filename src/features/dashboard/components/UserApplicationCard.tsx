@@ -12,8 +12,8 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
-import { ApplicationStatus, type MemberRole } from '@/generated/prisma';
-import { applicationStatusLabels, memberRoleLabels } from '@/lib/constants';
+import { ApplicationStatus, type MemberRole, type ProjectCategory } from '@/generated/prisma';
+import { applicationStatusLabels, memberRoleLabels, projectCategoryLabels } from '@/lib/constants';
 import { cn, timeAgo } from '@/lib/utils';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
@@ -30,7 +30,7 @@ export interface UserApplicationCardProps {
       project: {
         id: string;
         title: string;
-        category: string;
+        category: ProjectCategory;
       };
     };
   };
@@ -82,6 +82,7 @@ const UserApplicationCard = ({ application }: UserApplicationCardProps) => {
   const currentStatus = statusConfig[status] ?? statusConfig[ApplicationStatus.PENDING];
   const StatusIcon = currentStatus.icon;
   const roleLabel = (role && memberRoleLabels[role]) ?? 'Contributor';
+  const projectCategory = projectCategoryLabels[project.category] ?? null;
 
   const relativeTime = timeAgo(new Date(createdAt)) ?? 'recently';
 
@@ -120,7 +121,7 @@ const UserApplicationCard = ({ application }: UserApplicationCardProps) => {
             <ArrowUpRight className='text-muted-foreground group-hover/link:text-primary size-4 shrink-0 transition-transform duration-200 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5' />
           </Link>
           {project.category && (
-            <p className='text-muted-foreground mt-0.5 text-xs font-medium'>{project.category}</p>
+            <p className='text-muted-foreground mt-0.5 text-xs font-medium'>{projectCategory}</p>
           )}
         </div>
       </CardHeader>
@@ -158,9 +159,9 @@ const UserApplicationCard = ({ application }: UserApplicationCardProps) => {
         </span>
         <div className='flex shrink-0 items-center gap-2'>
           {status === ApplicationStatus.PENDING && (
-            <Button variant='outline' size='xs' asChild>
+            <Button variant='outline' size='xs' asChild aria-label={'Edit application'}>
               <Link href={`/projects/${project.id}/apply`}>
-                <Pencil className='size-3' />
+                <Pencil className='size-3' aria-hidden />
                 Edit
               </Link>
             </Button>
@@ -168,9 +169,10 @@ const UserApplicationCard = ({ application }: UserApplicationCardProps) => {
           <Link
             href={`/projects/${project.id}`}
             className='text-primary hover:text-primary/80 inline-flex items-center gap-1 text-xs font-semibold transition-colors hover:underline'
+            aria-label={'View project details'}
           >
             View Project
-            <ArrowRight className='size-3' />
+            <ArrowRight className='size-3' aria-hidden />
           </Link>
         </div>
       </div>

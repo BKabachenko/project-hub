@@ -17,7 +17,7 @@ export const UserApplicationsBlock = async () => {
         </div>
       ) : (
         <Card className={'text-muted-foreground flex items-center justify-center text-xl'}>
-          {`You haven't applicate any projects yet.`}
+          {`You haven't applied to any projects yet.`}
         </Card>
       )}
     </div>

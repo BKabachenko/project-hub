@@ -27,5 +27,7 @@ export const getUserSubmittedApplications = async () => {
         },
       },
     },
+    orderBy: { createdAt: 'desc' },
+    take: 50,
   });
 };
