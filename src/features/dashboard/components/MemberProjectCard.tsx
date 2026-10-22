@@ -2,8 +2,8 @@ import Link from 'next/link';
 
 import type { ProjectWithDetails } from '../types';
 
-import { auth } from '@/auth';
 import { memberRoleLabels } from '@/lib/constants';
+import { getAuthSession } from '@/lib/session';
 import { Badge } from '@/shared/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card';
 
@@ -12,7 +12,7 @@ interface MemberProjectCardProps {
 }
 
 const MemberProjectCard = async ({ project }: MemberProjectCardProps) => {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session) return null;
   const userId = session.user?.id;
 

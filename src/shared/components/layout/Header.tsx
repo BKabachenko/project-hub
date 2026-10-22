@@ -2,14 +2,15 @@ import Link from 'next/link';
 
 import { Menu } from 'lucide-react';
 
-import { auth, signIn, signOut } from '@/auth';
+import { signIn, signOut } from '@/auth';
+import { getAuthSession } from '@/lib/session';
 
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Button } from '../ui/button';
 import ThemeSwitcher from '../ui/ThemeSwitcher';
 
 const Header = async () => {
-  const session = await auth();
+  const session = await getAuthSession();
 
   return (
     <header className='mb-10'>

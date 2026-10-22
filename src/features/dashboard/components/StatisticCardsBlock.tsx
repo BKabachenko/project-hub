@@ -1,6 +1,6 @@
 import type { ProjectWithDetails } from '../types';
 
-import { auth } from '@/auth';
+import { getAuthSession } from '@/lib/session';
 
 import StatisticCard from './StatisticCard';
 
@@ -9,7 +9,7 @@ interface StatisticCardsBlockProps {
 }
 
 const StatisticCardsBlock = async ({ projects }: StatisticCardsBlockProps) => {
-  const session = await auth();
+  const session = await getAuthSession();
   if (!session) return null;
   const userId = session.user?.id;
 
