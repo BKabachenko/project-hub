@@ -54,6 +54,7 @@
 
   --color-success: var(--success); 
   --color-failure: var(--failure);
+  --color-pending: var(--pending);
 
 }
 
@@ -98,6 +99,7 @@
 
   --success: oklch(59.598% 0.12741 163.254);
   --failure: oklch(52.221% 0.20978 23.318);
+  --pending: oklch(72.5% 0.16 68.5);
 
 }
 
@@ -133,6 +135,7 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.552 0.016 285.938);
+  --pending: oklch(76% 0.16 68.5);
 }
 
 @layer base {

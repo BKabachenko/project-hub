@@ -1,28 +1,26 @@
-import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
 
-import { auth, signIn } from '@/auth';
-import { MemberProjectsBlock, OwnerProjectBlock, StatisticCardsBlock } from '@/features/dashboard';
+import {
+  MemberProjectsBlock,
+  OwnerProjectBlock,
+  StatisticCardsBlock,
+  UserApplicationsBlock,
+  UserApplicationsBlockSkeleton,
+} from '@/features/dashboard';
 import prisma from '@/lib/prisma';
+import { requireUser } from '@/lib/session';
 
 const DashboardPage = async () => {
-  const session = await auth();
-  if (!session) {
-    await signIn();
-  }
-
-  const userId = session?.user?.id;
-  if (!userId) {
-    redirect('/');
-  }
+  const {userId, name} = await requireUser()
 
   const projects = await prisma.project.findMany({
     where: {
       OR: [
-        { authorId: session.user?.id },
+        { authorId: userId },
         {
           projectMembers: {
             some: {
-              userId: session.user?.id,
+              userId: userId,
               status: {
                 in: ['ACTIVE'],
               },
@@ -39,11 +37,14 @@ const DashboardPage = async () => {
       requirements: {
         where: {
           project: {
-            authorId: session.user?.id,
+            authorId: userId,
           },
         },
         select: {
+          id: true,
+          projectId: true,
           requiredCount: true,
+          role: true,
           applications: {
             where: {
               status: 'PENDING',
@@ -80,7 +81,7 @@ const DashboardPage = async () => {
     project.projectMembers.some((user) => user.userId === userId)
   );
 
-  const userName = session.user?.name?.split(' ')[0] ?? 'User';
+  const userName = name?.split(' ')[0] ?? 'User';
 
   return (
     <div className={'flex flex-col gap-8 md:gap-12'}>
@@ -91,6 +92,9 @@ const DashboardPage = async () => {
       <StatisticCardsBlock projects={projects} />
       <OwnerProjectBlock projects={userOwnedProjects} />
       <MemberProjectsBlock projects={userParticipantProjects} />
+      <Suspense fallback={<UserApplicationsBlockSkeleton />}>
+        <UserApplicationsBlock />
+      </Suspense>
     </div>
   );
 };
