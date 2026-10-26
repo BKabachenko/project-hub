@@ -123,7 +123,7 @@ export const getMemberActiveProjects = cache(async () => {
   });
 });
 
-export const getUserSubmittedApplications = async () => {
+export const getUserSubmittedApplications = cache(async () => {
   const userId = await requireUserId();
 
   return await prisma.application.findMany({
@@ -152,4 +152,4 @@ export const getUserSubmittedApplications = async () => {
     orderBy: { createdAt: 'desc' },
     take: 50,
   });
-};
+});
