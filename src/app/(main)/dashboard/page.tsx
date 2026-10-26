@@ -4,6 +4,7 @@ import {
   MemberProjectsBlock,
   MemberProjectsBlockSkeleton,
   OwnerProjectBlock,
+  OwnerProjectBlockSkeleton,
   StatisticCardsBlock,
   StatisticCardsBlockSkeleton,
   UserApplicationsBlock,
@@ -26,7 +27,7 @@ const DashboardPage = async () => {
         <StatisticCardsBlock />
       </Suspense>
 
-      <Suspense fallback={<MemberProjectsBlockSkeleton />}>
+      <Suspense fallback={<OwnerProjectBlockSkeleton />}>
         <OwnerProjectBlock />
       </Suspense>
 

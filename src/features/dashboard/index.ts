@@ -6,3 +6,4 @@ export { UserApplicationsBlock } from './components/UserApplicationsBlock';
 export { UserApplicationsBlockSkeleton } from './components/skeletons/UserApplicationsBlockSkeleton';
 export { MemberProjectsBlockSkeleton } from './components/skeletons/MemberProjectsBlockSkeleton';
 export { StatisticCardsBlockSkeleton } from './components/skeletons/StatisticCardsBlockSkeleton';
+export { OwnerProjectBlockSkeleton } from './components/skeletons/OwnerProjectBlockSkeleton';
