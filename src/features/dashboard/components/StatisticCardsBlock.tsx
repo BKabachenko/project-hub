@@ -11,7 +11,7 @@ const StatisticCardsBlock = async () => {
 
   return (
     <div className='grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4'>
-      <StatisticCard value={userOwnedProjects.length} variant={'TOTAl'}>
+      <StatisticCard value={userOwnedProjects.length} variant={'TOTAL'}>
         Projects Managed
       </StatisticCard>
       <StatisticCard value={memberActiveProjects.length} variant={'ACTIVE'}>

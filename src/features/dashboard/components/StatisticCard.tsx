@@ -6,11 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui
 interface StatisticCardProps {
   children: string;
   value: number;
-  variant: 'TOTAl' | 'ACTIVE' | 'PENDING';
+  variant: 'TOTAL' | 'ACTIVE' | 'PENDING';
 }
 
 const variants: Record<StatisticCardProps['variant'], LucideIcon> = {
-  TOTAl: LayoutList,
+  TOTAL: LayoutList,
   ACTIVE: ChartLine,
   PENDING: Clock,
 };
