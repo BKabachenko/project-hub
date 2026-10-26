@@ -1,37 +1,24 @@
-import type { ProjectWithDetails } from '../types';
-
-import { getAuthSession } from '@/lib/session';
+import { getMemberActiveProjects, getOwnerProjects } from '../queries';
 
 import StatisticCard from './StatisticCard';
 
-interface StatisticCardsBlockProps {
-  projects: ProjectWithDetails[];
-}
+const StatisticCardsBlock = async () => {
+  const userOwnedProjects = await getOwnerProjects();
 
-const StatisticCardsBlock = async ({ projects }: StatisticCardsBlockProps) => {
-  const session = await getAuthSession();
-  if (!session) return null;
-  const userId = session.user?.id;
+  const memberActiveProjects = await getMemberActiveProjects();
 
-  const totalOpenProjects = projects.length;
-
-  const userProjects = projects.filter((project) => project.authorId === userId);
-
-  const totalPending = userProjects
-    .flatMap((project) => project.requirements)
-    .flatMap((project) => project.applications)
-    .filter((project) => project.status === 'PENDING').length;
+  const totalPending = userOwnedProjects.reduce((sum, p) => sum + p.pendingApplicants.length, 0);
 
   return (
     <div className='grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4'>
-      <StatisticCard value={totalOpenProjects} variant={'TOTAl'}>
-        TOTAL PROJECTS
+      <StatisticCard value={userOwnedProjects.length} variant={'TOTAl'}>
+        Projects Managed
       </StatisticCard>
-      <StatisticCard value={userProjects.length} variant={'ACTIVE'}>
-        YOUR ACTIVE PROJECTS
+      <StatisticCard value={memberActiveProjects.length} variant={'ACTIVE'}>
+        Active Contributions
       </StatisticCard>
       <StatisticCard value={totalPending} variant={'PENDING'}>
-        PENDING APPLICATIONS
+        Pending Review
       </StatisticCard>
     </div>
   );

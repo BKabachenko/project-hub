@@ -26,7 +26,7 @@ const StatisticCard = ({ children, value, variant }: StatisticCardProps) => {
       <CardContent>
         <div className='text-3xl font-extrabold'>{value}</div>
       </CardContent>
-      <div className='absolute top-7 right-5 flex h-12 w-12 items-center justify-center rounded-lg bg-purple-200'>
+      <div className='absolute top-7 right-5 flex h-12 w-12 items-center justify-center rounded-lg bg-purple-300/80 dark:bg-purple-800/80'>
         <Icon />
       </div>
     </Card>
