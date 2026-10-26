@@ -5,7 +5,7 @@ import { useOptimistic } from 'react';
 
 import { toast } from 'sonner';
 
-import type { ProjectMemberWithUser } from '../types';
+import type { PendingApplicant } from '../types';
 
 import resolveApplicationAction, {
   type ResolveApplicationProps,
@@ -14,12 +14,12 @@ import resolveApplicationAction, {
 import OwnerProjectApplicantBlock from './OwnerProjectApplicantBlock';
 
 interface OwnerApplicantsListProps {
-  applicants: ProjectMemberWithUser[];
+  applicants: PendingApplicant[];
 }
 
 export type HandleResolveApplicationFn = (
   action: ResolveApplicationProps['action'],
-  applicantId: ProjectMemberWithUser['id']
+  applicantId: PendingApplicant['id']
 ) => void;
 
 const OwnerApplicantsList = ({ applicants }: OwnerApplicantsListProps) => {

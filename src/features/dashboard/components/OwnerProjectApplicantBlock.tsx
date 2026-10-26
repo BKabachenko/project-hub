@@ -5,16 +5,16 @@ import Link from 'next/link';
 
 import { FileUser } from 'lucide-react';
 
-import type { ProjectMemberWithUser } from '../types';
+import type { PendingApplicant } from '../types';
 
-import { Button } from '@/shared/components/ui/button';
 import { memberRoleLabels } from '@/lib/constants';
 import { timeAgo } from '@/lib/utils';
+import { Button } from '@/shared/components/ui/button';
 
 import type { HandleResolveApplicationFn } from './OwnerApplicantsList';
 
 interface OwnerProjectApplicantBlockProps {
-  applicant: ProjectMemberWithUser;
+  applicant: PendingApplicant;
   handleResolveApplication: HandleResolveApplicationFn;
 }
 
@@ -50,7 +50,7 @@ const OwnerProjectApplicantBlock = ({
       </div>
       <div className='flex flex-col gap-2 sm:flex-row'>
         <Button variant={'outline'} size={'sm'} asChild>
-          <Link href={`/dashboard/applications/${applicant.id}`} target={'_blank'}>
+          <Link href={`/dashboard/applications/${applicant.id}`} target={'_blank'} rel='noopener'>
             DETAILS
           </Link>
         </Button>

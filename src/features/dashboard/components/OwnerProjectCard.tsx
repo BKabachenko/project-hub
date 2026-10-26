@@ -6,9 +6,9 @@ import Link from 'next/link';
 
 import { ChevronDown, FileUser } from 'lucide-react';
 
-import type { ProjectWithDetails } from '../types';
+import type { OwnerProjectViewModel } from '../types';
 
-import { timeAgo } from '@/lib/utils';
+import { cn, timeAgo } from '@/lib/utils';
 import { Button } from '@/shared/components/ui/button';
 import {
   Card,
@@ -22,21 +22,17 @@ import { Separator } from '@/shared/components/ui/separator';
 import OwnerApplicantsList from './OwnerApplicantsList';
 
 interface OwnerProjectCardProps {
-  project: ProjectWithDetails;
+  project: OwnerProjectViewModel;
 }
 
 const OwnerProjectCard = ({ project }: OwnerProjectCardProps) => {
-  const pendingApplicants = project.requirements
-    .flatMap((project) => project.applications)
-    .filter((applicant) => applicant.status === 'PENDING');
-  const numberOfApplicants = pendingApplicants.length;
+  const [isOpen, setIsOpen] = useState(project.numberOfApplicants === 1);
 
-  const [isOpen, setIsOpen] = useState(numberOfApplicants === 1);
-
-  const approvedApplicants = project.projectMembers.filter((member) => member.status === 'ACTIVE');
-  const projectPositions = project.requirements.reduce((sum, position) => {
-    return sum + position.requiredCount;
-  }, 0);
+  const hasPendingApplicants = project.numberOfApplicants > 0;
+  const applicantLabel =
+    project.numberOfApplicants === 1
+      ? '1 PENDING APPLICANT'
+      : `${project.numberOfApplicants} PENDING APPLICANTS`;
 
   return (
     <Card className={'shadow-md'} key={project.id}>
@@ -49,28 +45,38 @@ const OwnerProjectCard = ({ project }: OwnerProjectCardProps) => {
       <CardContent>
         <div className='flex flex-col gap-4 sm:flex-row sm:items-center'>
           <span className={'text-muted-foreground text-xs font-medium'}>
-            {approvedApplicants.length}/{projectPositions} Hired
+            {project.approvedApplicants}/{project.projectPositions} Hired
           </span>
           <Button
             variant={'ghost'}
-            className={
-              'flex h-6 flex-row items-center justify-between gap-1 bg-orange-200 px-3 py-1'
-            }
+            size={'sm'}
+            className={cn(
+              'h-7 rounded-md border px-2.5 text-xs font-semibold tracking-wide transition-colors',
+              hasPendingApplicants
+                ? 'border-pending/40 bg-pending/15 text-foreground hover:bg-pending/25 active:bg-pending/30 dark:border-pending/30 dark:bg-pending/20'
+                : 'border-border/60 bg-muted/40 text-muted-foreground opacity-60'
+            )}
             onClick={() => setIsOpen(!isOpen)}
-            disabled={numberOfApplicants === 0}
+            disabled={!hasPendingApplicants}
           >
-            <FileUser />
-            {/* TODO: make pluralization */}
-            {numberOfApplicants} PENDING APPLICANT
-            <ChevronDown />
+            <FileUser className={cn('size-3.5 shrink-0', hasPendingApplicants && 'text-pending')} />
+            <span>{applicantLabel}</span>
+            {hasPendingApplicants && (
+              <ChevronDown
+                className={cn(
+                  'size-3.5 shrink-0 transition-transform duration-200',
+                  isOpen && 'rotate-180'
+                )}
+              />
+            )}
           </Button>
         </div>
-        {isOpen && numberOfApplicants > 0 && (
+        {isOpen && project.numberOfApplicants > 0 && (
           <div className=''>
             <Separator className={'my-4'} />
             <div className='flex flex-col gap-2'>
               <h4 className={'text-muted-foreground text-[10px] font-bold'}>PENDING REVIEW</h4>
-              <OwnerApplicantsList applicants={pendingApplicants} />
+              <OwnerApplicantsList applicants={project.pendingApplicants} />
             </div>
           </div>
         )}

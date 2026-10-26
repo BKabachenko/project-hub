@@ -31,7 +31,7 @@ const ProjectCard = ({ project }: { project: ProjectWithPositions }) => {
           {project.type.map((type) => (
             <ProjectTypeBadge key={type} type={type} />
           ))}
-          <ProjectStatusBadge status={project.status} />
+          <ProjectStatusBadge status={project.status} showIcon={false} />
         </CardAction>
       </CardHeader>
       <CardContent className={'flex flex-col gap-2'}>
