@@ -1,16 +1,14 @@
 import Link from 'next/link';
 
-import type { ProjectWithDetails } from '../types';
-
 import { Card } from '@/shared/components/ui/card';
+
+import { getOwnerProjects } from '../queries';
 
 import OwnerProjectCard from './OwnerProjectCard';
 
-interface OwnerProjectBlockProps {
-  projects: ProjectWithDetails[];
-}
+const OwnerProjectBlock = async () => {
+  const projects = await getOwnerProjects();
 
-const OwnerProjectBlock = ({ projects }: OwnerProjectBlockProps) => {
   return (
     <div className='flex flex-col gap-4'>
       <div className='flex flex-row items-center justify-between'>

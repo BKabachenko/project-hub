@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 import { FileUser } from 'lucide-react';
 
-import type { ProjectMemberWithUser } from '../types';
+import type { PendingApplicant } from '../types';
 
 import { Button } from '@/shared/components/ui/button';
 import { memberRoleLabels } from '@/lib/constants';
@@ -14,7 +14,7 @@ import { timeAgo } from '@/lib/utils';
 import type { HandleResolveApplicationFn } from './OwnerApplicantsList';
 
 interface OwnerProjectApplicantBlockProps {
-  applicant: ProjectMemberWithUser;
+  applicant: PendingApplicant;
   handleResolveApplication: HandleResolveApplicationFn;
 }
 
