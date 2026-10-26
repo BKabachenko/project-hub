@@ -14,7 +14,7 @@ const prismaClientSingleton = () => {
     log: [{ emit: 'event', level: 'query' }],
   });
 
-  if (process.env.NODE_ENV !== 'development') {
+  if (process.env.NODE_ENV === 'development') {
     client.$on('query', (e) => {
       console.log(`[${e.duration}ms] ${e.query}`);
     });
