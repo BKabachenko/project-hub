@@ -13,9 +13,8 @@ const OwnerProjectBlock = async () => {
     <div className='flex flex-col gap-4'>
       <div className='flex flex-row items-center justify-between'>
         <h3 className={'text-2xl font-bold'}>Projects I Manage</h3>
-        <Link href={'#'} className={'text-muted-foreground font-bold'}>
-          {/*TODO empty link!*/}
-          VIEW All
+        <Link href={'/projects/create'} className={'text-muted-foreground font-bold'}>
+          Create new project
         </Link>
       </div>
       {projects.length > 0 ? (
