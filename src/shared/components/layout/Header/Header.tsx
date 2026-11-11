@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+
 import Link from 'next/link';
 
 import { Menu } from 'lucide-react';
@@ -53,6 +55,9 @@ export const Header = async () => {
         <div className='mx-4'>
           <ThemeSwitcher />
         </div>
+        <Suspense fallback={null}>
+          <HeaderUserNav />
+        </Suspense>
       </div>
     </header>
   );
