@@ -1,8 +1,8 @@
 import { signIn, signOut } from '@/auth';
 import { getAuthSession } from '@/lib/session';
 
-import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
-import { Button } from '../../ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
+import { Button } from '../../../ui/button';
 
 const HeaderUserNav = async () => {
   const session = await getAuthSession();
