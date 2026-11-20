@@ -8,7 +8,10 @@ const HeaderUserNav = async () => {
   const session = await getAuthSession();
 
   return (
-    <div className=''>
+    <div 
+        className={'flex flex-row justify-center items-center'}
+    
+    >
       {session ? (
         <form
           action={async () => {
@@ -16,7 +19,7 @@ const HeaderUserNav = async () => {
             await signOut();
           }}
         >
-          <button type='submit' className={'translate-y-0.5'}>
+          <button type='submit'>
             <Avatar>
               <AvatarImage
                 src={session.user?.image ?? undefined}

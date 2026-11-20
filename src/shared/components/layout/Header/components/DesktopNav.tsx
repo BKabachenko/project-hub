@@ -11,8 +11,6 @@ const DesktopNav = async () => {
     session ? visibility !== 'guest' : visibility !== 'private'
   );
 
-  console.log(listOfLinks);
-
   return (
     <nav className='hidden justify-end gap-x-5 px-10 md:flex'>
       {listOfLinks.map((link) => (
