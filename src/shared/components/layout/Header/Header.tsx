@@ -6,6 +6,7 @@ import ThemeSwitcher from '../../ui/ThemeSwitcher';
 
 import HeaderNavigation from './components/HeaderNavigation';
 import HeaderUserNav from './components/HeaderUserNav';
+import HeaderNavigationSkeleton from './components/skeletons/HeaderNavigationSkeleton';
 
 export const Header = () => {
   return (
@@ -15,7 +16,7 @@ export const Header = () => {
           <div className=''>Project Hub</div>
         </Link>
 
-        <Suspense fallback={null}>
+        <Suspense fallback={<HeaderNavigationSkeleton />}>
           <HeaderNavigation />
         </Suspense>
 
