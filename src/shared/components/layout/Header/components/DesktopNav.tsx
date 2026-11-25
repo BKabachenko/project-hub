@@ -1,20 +1,26 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-import { getAuthSession } from '@/lib/session';
+import type { NAVLINKS } from '../constants';
+import { isActiveLink } from '../utils';
 
-import { LINKS } from '../constants';
+interface DesktopNavProps {
+  links: NAVLINKS[];
+}
 
-const DesktopNav = async () => {
-  const session = await getAuthSession();
-
-  const listOfLinks = LINKS.filter(({ visibility }) =>
-    session ? visibility !== 'guest' : visibility !== 'private'
-  );
+const DesktopNav = ({ links }: DesktopNavProps) => {
+  const pathname = usePathname();
 
   return (
     <nav className='hidden justify-end gap-x-5 px-10 md:flex'>
-      {listOfLinks.map((link) => (
-        <Link href={link.href} key={link.title}>
+      {links.map((link) => (
+        <Link
+          href={link.href}
+          key={link.title}
+          className={isActiveLink(pathname, link.href) ? 'underline' : ''}
+        >
           {link.title}
         </Link>
       ))}

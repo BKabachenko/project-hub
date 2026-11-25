@@ -1,4 +1,4 @@
-interface NAVLINKS {
+export interface NAVLINKS {
   title: string;
   href: string;
   visibility: 'public' | 'private' | 'guest';
@@ -10,3 +10,5 @@ export const LINKS: NAVLINKS[] = [
   { title: 'Impact', href: '/impact', visibility: 'public' },
   { title: 'Dashboard', href: '/dashboard', visibility: 'private' },
 ];
+
+export const DESKTOP_NAV_MEDIA_QUERY = '(min-width: 48rem)';

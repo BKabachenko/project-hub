@@ -4,9 +4,8 @@ import Link from 'next/link';
 
 import ThemeSwitcher from '../../ui/ThemeSwitcher';
 
-import DesktopNav from './components/DesktopNav';
+import HeaderNavigation from './components/HeaderNavigation';
 import HeaderUserNav from './components/HeaderUserNav';
-import MobileNav from './components/MobileNav';
 
 export const Header = () => {
   return (
@@ -17,17 +16,13 @@ export const Header = () => {
         </Link>
 
         <Suspense fallback={null}>
-          <DesktopNav />
-        </Suspense>
-
-        <Suspense fallback={null}>
-          <MobileNav />
+          <HeaderNavigation />
         </Suspense>
 
         <div className='mx-4'>
           <ThemeSwitcher />
         </div>
-        
+
         <Suspense fallback={null}>
           <HeaderUserNav />
         </Suspense>
