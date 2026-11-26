@@ -4,7 +4,7 @@ import { getAuthSession } from '@/lib/session';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 import { Button } from '../../../ui/button';
 
-const HeaderUserNav = async () => {
+const HeaderUserMenu = async () => {
   const session = await getAuthSession();
 
   return (
@@ -46,4 +46,4 @@ const HeaderUserNav = async () => {
   );
 };
 
-export default HeaderUserNav;
+export default HeaderUserMenu;

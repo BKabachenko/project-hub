@@ -5,7 +5,7 @@ import Link from 'next/link';
 import ThemeSwitcher from '../../ui/ThemeSwitcher';
 
 import HeaderNavigation from './components/HeaderNavigation';
-import HeaderUserNav from './components/HeaderUserNav';
+import HeaderUserMenu from './components/HeaderUserMenu';
 import HeaderNavigationSkeleton from './components/skeletons/HeaderNavigationSkeleton';
 
 export const Header = () => {
@@ -25,7 +25,7 @@ export const Header = () => {
         </div>
 
         <Suspense fallback={null}>
-          <HeaderUserNav />
+          <HeaderUserMenu />
         </Suspense>
       </div>
     </header>

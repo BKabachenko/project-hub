@@ -1,6 +1,6 @@
 import { getAuthSession } from '@/lib/session';
 
-import DesktopNav from '../components/DesktopNav';
+import DesktopNav from './DesktopNav';
 import MobileNav from '../components/MobileNav';
 import { LINKS } from '../constants';
 
